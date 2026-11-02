@@ -1,6 +1,296 @@
-// =====================================
-// KIWI HOMEPAGE - JAVASCRIPT
-// =====================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiwi Homepage</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #080b09;
+    color: white;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+header {
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    color: #65ff85;
+    letter-spacing: 2px;
+}
+
+.bookmark {
+    color: #888;
+    font-size: 12px;
+}
+
+main {
+    max-width: 950px;
+    margin: 65px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+.hero h1 span {
+    color: #65ff85;
+}
+
+.hero p {
+    color: #888;
+    margin-bottom: 35px;
+}
+
+.search {
+    width: 100%;
+    max-width: 600px;
+    padding: 17px 22px;
+    border: 1px solid #26372a;
+    border-radius: 14px;
+    background: #111713;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+.search:focus {
+    border-color: #65ff85;
+}
+
+.section-title {
+    text-align: left;
+    margin: 45px 0 18px;
+    color: #aaa;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 15px;
+}
+
+.site-tile {
+    position: relative;
+    background: #111713;
+    border: 1px solid #26372a;
+    border-radius: 15px;
+    padding: 28px 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.site-tile:hover {
+    transform: translateY(-4px);
+    border-color: #65ff85;
+    background: #17221a;
+}
+
+.site-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.site-name {
+    font-weight: bold;
+}
+
+.favorite {
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    border: none;
+    background: transparent;
+    color: #777;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.favorite.active {
+    color: #65ff85;
+}
+
+/* POPUP */
+
+.overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0,0,0,0.85);
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.popup {
+    width: 100%;
+    max-width: 950px;
+    height: 85vh;
+    background: #111713;
+    border: 1px solid #65ff85;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-header {
+    height: 55px;
+    background: #18221b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    flex-shrink: 0;
+}
+
+.popup-title {
+    font-weight: bold;
+}
+
+.popup-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.popup-controls button {
+    border: none;
+    border-radius: 7px;
+    padding: 8px 13px;
+    background: #29372d;
+    color: white;
+    cursor: pointer;
+}
+
+.popup-controls button:hover {
+    background: #65ff85;
+    color: black;
+}
+
+.frame-container {
+    flex: 1;
+    position: relative;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+}
+
+footer {
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    padding: 30px;
+}
+
+@media(max-width: 600px) {
+    main {
+        margin-top: 35px;
+    }
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+    .popup {
+        height: 90vh;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">KIWI.</div>
+    <div class="bookmark">CTRL + D TO BOOKMARK</div>
+</header>
+
+<main>
+
+    <div class="hero">
+        <h1>Welcome to <span>Kiwi.</span></h1>
+        <p>Your internet. Your homepage.</p>
+
+        <input
+            class="search"
+            id="searchBar"
+            type="text"
+            placeholder="Search your websites..."
+        >
+    </div>
+
+    <div class="section-title">YOUR WEBSITES</div>
+
+    <div class="grid" id="siteGrid"></div>
+
+    <div class="section-title">FAVORITES</div>
+
+    <div class="grid" id="favoriteGrid"></div>
+
+</main>
+
+<footer>
+    KIWI HOMEPAGE · YOUR WEB STARTS HERE
+</footer>
+
+<!-- POPUP WINDOW -->
+
+<div class="overlay" id="siteOverlay">
+
+    <div class="popup">
+
+        <div class="popup-header">
+
+            <div class="popup-title" id="popupTitle">
+                Website
+            </div>
+
+            <div class="popup-controls">
+                <button onclick="reloadPopup()">↻</button>
+                <button onclick="closePopup()">✕</button>
+            </div>
+
+        </div>
+
+        <div class="frame-container">
+            <iframe
+                id="siteFrame"
+                title="Website viewer"
+                src="about:blank"
+            ></iframe>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// WEBSITE LIST
 
 const sites = [
     {
@@ -21,96 +311,92 @@ const sites = [
 ];
 
 let favorites = [];
+let currentSite = null;
 
-// =====================================
-// CREATE WEBSITE TILES
-// =====================================
+// LOAD WEBSITE TILES
 
 function loadSites() {
-    const container = document.getElementById("siteGrid");
+    const grid = document.getElementById("siteGrid");
+    const favoriteGrid = document.getElementById("favoriteGrid");
 
-    if (!container) {
-        console.error("Missing element: siteGrid");
-        return;
-    }
-
-    container.innerHTML = "";
+    grid.innerHTML = "";
+    favoriteGrid.innerHTML = "";
 
     sites.forEach((site, index) => {
-        const tile = document.createElement("div");
 
+        const tile = document.createElement("div");
         tile.className = "site-tile";
 
-        tile.innerHTML = `
-            <div class="site-icon">${site.icon}</div>
-            <div class="site-name">${site.name}</div>
-            <button class="favorite-button">
-                ${favorites.includes(index) ? "★" : "☆"}
-            </button>
-        `;
+        const icon = document.createElement("div");
+        icon.className = "site-icon";
+        icon.textContent = site.icon;
 
-        tile.addEventListener("click", () => {
-            openSite(index);
-        });
+        const name = document.createElement("div");
+        name.className = "site-name";
+        name.textContent = site.name;
 
-        tile.querySelector(".favorite-button")
-            .addEventListener("click", (event) => {
+        const favorite = document.createElement("button");
+        favorite.className = "favorite";
+        favorite.textContent = favorites.includes(index) ? "★" : "☆";
+
+        if (favorites.includes(index)) {
+            favorite.classList.add("active");
+        }
+
+        favorite.onclick = (event) => {
+            event.stopPropagation();
+            toggleFavorite(index);
+        };
+
+        tile.append(icon, name, favorite);
+        tile.onclick = () => openSite(index);
+
+        grid.appendChild(tile);
+
+        if (favorites.includes(index)) {
+            const favoriteTile = tile.cloneNode(true);
+            favoriteTile.onclick = () => openSite(index);
+
+            favoriteTile.querySelector(".favorite").onclick = (event) => {
                 event.stopPropagation();
                 toggleFavorite(index);
-            });
+            };
 
-        container.appendChild(tile);
+            favoriteGrid.appendChild(favoriteTile);
+        }
+
     });
 }
 
-// =====================================
-// OPEN POPUP
-// =====================================
+// OPEN WEBSITE
 
 function openSite(index) {
     const site = sites[index];
 
-    const overlay = document.getElementById("siteOverlay");
-    const frame = document.getElementById("siteFrame");
-    const title = document.getElementById("popupTitle");
+    currentSite = site;
 
-    if (!overlay || !frame || !title) {
-        console.error("Popup elements are missing.");
-        return;
-    }
-
-    title.textContent = site.name;
-
-    frame.src = site.url;
-
-    overlay.style.display = "flex";
+    document.getElementById("popupTitle").textContent = site.name;
+    document.getElementById("siteFrame").src = site.url;
+    document.getElementById("siteOverlay").style.display = "flex";
 }
 
-// =====================================
 // CLOSE POPUP
-// =====================================
 
 function closePopup() {
-    const overlay = document.getElementById("siteOverlay");
-    const frame = document.getElementById("siteFrame");
-
-    overlay.style.display = "none";
-    frame.src = "about:blank";
+    document.getElementById("siteOverlay").style.display = "none";
+    document.getElementById("siteFrame").src = "about:blank";
+    currentSite = null;
 }
 
-// =====================================
-// RELOAD POPUP
-// =====================================
+// RELOAD WEBSITE
 
 function reloadPopup() {
-    const frame = document.getElementById("siteFrame");
-
-    frame.src = frame.src;
+    if (currentSite) {
+        document.getElementById("siteFrame").src = currentSite.url;
+    }
 }
 
-// =====================================
 // FAVORITES
-// =====================================
 
 function toggleFavorite(index) {
     if (favorites.includes(index)) {
@@ -122,49 +408,31 @@ function toggleFavorite(index) {
     loadSites();
 }
 
-// =====================================
 // SEARCH
-// =====================================
 
-function searchSites() {
-    const search = document
-        .getElementById("searchBar")
-        .value.toLowerCase();
+document.getElementById("searchBar").addEventListener("input", function() {
+    const query = this.value.toLowerCase();
 
-    const tiles = document.querySelectorAll(".site-tile");
-
-    tiles.forEach((tile, index) => {
+    document.querySelectorAll("#siteGrid .site-tile").forEach((tile, index) => {
         const name = sites[index].name.toLowerCase();
 
-        tile.style.display = name.includes(search)
-            ? "block"
-            : "none";
+        tile.style.display = name.includes(query) ? "" : "none";
     });
-}
+});
 
-// =====================================
-// BOOKMARK SHORTCUT
-// =====================================
+// ESCAPE TO CLOSE
 
-document.addEventListener("keydown", (event) => {
-    if (event.ctrlKey && event.key.toLowerCase() === "d") {
-        event.preventDefault();
-        alert("Kiwi homepage bookmarked!");
-    }
-
+document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
         closePopup();
     }
 });
 
-// =====================================
-// START KIWI
-// =====================================
+// START
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadSites();
+loadSites();
 
-    document
-        .getElementById("searchBar")
-        ?.addEventListener("input", searchSites);
-});
+</script>
+
+</body>
+</html>
