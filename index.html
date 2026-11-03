@@ -1,208 +1,279 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kiwi Bowling Arcade</title>
-
+<title>Kiwi</title>
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#020a03;
+  color:white;
+  font-family:Arial,sans-serif;
+  overflow-x:hidden;
 }
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-        radial-gradient(ellipse at 50% 45%, #105518, transparent 65%),
-        #020702;
-    color: white;
-    font-family: Arial, sans-serif;
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(ellipse at 50% 42%,#07520b 0%,#063006 32%,#001000 65%,#000 100%);
 }
-
-/* HEADER */
-
-header {
-    height: 75px;
-    background: rgba(0,0,0,.8);
-    border-bottom: 1px solid #245b26;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  opacity:.45;
+  background-image:
+    radial-gradient(circle at 10% 20%,#52ff24 0 2px,transparent 4px),
+    radial-gradient(circle at 40% 15%,#52ff24 0 2px,transparent 4px),
+    radial-gradient(circle at 75% 30%,#52ff24 0 2px,transparent 4px),
+    radial-gradient(circle at 90% 60%,#52ff24 0 2px,transparent 4px),
+    radial-gradient(circle at 25% 75%,#52ff24 0 2px,transparent 4px);
+  background-size:300px 250px;
+  animation:stars 12s linear infinite;
 }
-
-.logo {
-    color: #39ff14;
-    font-size: 25px;
-    font-weight: bold;
-    letter-spacing: 1px;
+@keyframes stars{
+  from{background-position:0 0}
+  to{background-position:300px 250px}
 }
-
-.header-right {
-    color: #a8cba8;
-    font-size: 14px;
+header{
+  height:80px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 25px;
+  border-bottom:1px solid #17451a;
+  background:rgba(0,0,0,.85);
+  gap:15px;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
-
-/* HERO */
-
-.hero {
-    min-height: 480px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 45px 20px;
+.brand{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  color:#59ff35;
+  font-size:27px;
+  font-weight:bold;
+  text-decoration:none;
 }
-
-.bowling-icon {
-    font-size: 95px;
-    margin-bottom: 15px;
-    filter: drop-shadow(0 0 25px #39ff1470);
+.kiwi-icon{
+  width:47px;
+  height:47px;
+  border-radius:50%;
+  background:radial-gradient(circle,#baff87 0 27%,#1cff00 29% 65%,#063e00 68%);
+  display:grid;
+  place-items:center;
+  box-shadow:0 0 25px #20ff0080;
+  font-size:25px;
 }
-
-.hero h1 {
-    font-size: clamp(40px, 7vw, 68px);
-    margin: 0;
-    color: white;
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
-
-.hero h1 span {
-    color: #39ff14;
+.info{
+  border:1px solid #245321;
+  background:#061307;
+  border-radius:15px;
+  padding:13px;
+  color:#d5f4d0;
+  white-space:nowrap;
 }
-
-.hero p {
-    color: #a6cba6;
-    font-size: 18px;
-    margin: 15px 0 30px;
+.search{
+  width:min(36vw,480px);
+  padding:16px 20px;
+  background:#061307;
+  border:1px solid #245321;
+  border-radius:16px;
+  color:white;
+  font-size:17px;
+  outline:none;
 }
-
-.play-button {
-    display: inline-block;
-    padding: 17px 48px;
-    background: #39e52d;
-    color: #031003;
-    text-decoration: none;
-    border-radius: 12px;
-    font-size: 20px;
-    font-weight: bold;
-    box-shadow: 0 0 25px #39ff1450;
-    transition: .2s;
+.search:focus{border-color:#62ff35}
+.color-button{
+  border:1px solid #245321;
+  background:#061307;
+  border-radius:15px;
+  padding:13px;
+  font-size:23px;
+  cursor:pointer;
 }
-
-.play-button:hover {
-    transform: translateY(-4px);
-    background: #75ff65;
-    box-shadow: 0 0 35px #39ff1480;
+.hero{
+  min-height:620px;
+  padding:55px 15px 25px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
 }
-
-/* GAME INFORMATION */
-
-.section {
-    max-width: 1050px;
-    margin: 0 auto;
-    padding: 25px 20px 60px;
+.wave{
+  position:absolute;
+  height:130px;
+  left:-5%;
+  width:110%;
+  border-top:2px solid #4aff3a55;
+  border-radius:50%;
+  transform:rotate(-2deg);
+  pointer-events:none;
 }
-
-.section h2 {
-    text-align: center;
-    color: #65ff65;
-    margin-bottom: 25px;
-    font-size: 27px;
+.wave.one{top:180px}
+.wave.two{top:280px;transform:rotate(2deg)}
+.wave.three{top:400px}
+.logo-big{
+  width:145px;
+  height:145px;
+  margin:0 auto 22px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:78px;
+  background:radial-gradient(circle,#d8ffad 0 30%,#27ff00 32% 67%,#063b00 70%);
+  box-shadow:0 0 55px #2cff0080;
+  transform:rotate(-15deg);
+  position:relative;
 }
-
-.cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
+h1{
+  font-size:58px;
+  margin:0 0 35px;
+  position:relative;
 }
-
-.card {
-    background: #091409;
-    border: 1px solid #245b26;
-    border-radius: 15px;
-    padding: 25px;
-    text-align: center;
-    transition: .2s;
+.bookmark{
+  display:inline-block;
+  padding:17px 25px;
+  border:1px solid #245321;
+  background:#031006e8;
+  border-radius:15px;
+  font-size:20px;
+  color:#d4f5ce;
+  position:relative;
 }
-
-.card:hover {
-    border-color: #65ff65;
-    transform: translateY(-4px);
-    box-shadow: 0 0 20px #39ff1420;
+kbd{
+  padding:7px 13px;
+  border:1px solid #285d23;
+  border-radius:6px;
+  font-weight:bold;
 }
-
-.card-icon {
-    font-size: 40px;
-    margin-bottom: 12px;
+.tiktok{
+  display:block;
+  width:max-content;
+  max-width:95%;
+  margin:16px auto 30px;
+  padding:17px 25px;
+  border-radius:14px;
+  background:#031006ed;
+  border:1px solid #17451a;
+  color:#d5f4d0;
+  font-size:20px;
+  text-decoration:none;
+  position:relative;
 }
-
-.card h3 {
-    color: #baffb5;
-    margin: 5px 0 10px;
+.promo{
+  width:min(760px,90%);
+  margin:35px auto 0;
+  height:105px;
+  border-radius:16px;
+  border:1px solid #31572b;
+  background:linear-gradient(110deg,#15101f,#31132b,#101c0d);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 25px #0008;
 }
-
-.card p {
-    color: #9ab49a;
-    line-height: 1.5;
-    font-size: 14px;
+.promo strong{
+  font-size:clamp(25px,5vw,55px);
+  letter-spacing:8px;
+  color:#70ff46;
 }
-
-/* GAME PREVIEW */
-
-.preview {
-    max-width: 800px;
-    margin: 35px auto;
-    padding: 25px;
-    background: linear-gradient(135deg, #102c12, #061006);
-    border: 1px solid #28652b;
-    border-radius: 18px;
-    text-align: center;
+.promo span{color:#c9eac2;font-size:15px}
+.games-section{
+  border-top:6px solid #286c1e;
+  background:rgba(0,0,0,.65);
+  padding:15px 4% 60px;
 }
-
-.preview h2 {
-    color: #65ff65;
+.game-toolbar{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:12px;
+  color:#c9eac2;
+  margin:0 0 20px;
 }
-
-.preview-lane {
-    width: 100%;
-    max-width: 380px;
-    height: 155px;
-    margin: 20px auto;
-    background: linear-gradient(90deg, #a66b32, #d49b5c, #a66b32);
-    border: 5px solid #75451f;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 15px;
-    font-size: 32px;
+.game-toolbar select{
+  background:#061307;
+  border:1px solid #245321;
+  color:white;
+  border-radius:10px;
+  padding:12px;
 }
-
-/* FOOTER */
-
-footer {
-    padding: 25px;
-    text-align: center;
-    border-top: 1px solid #17451a;
-    color: #688968;
-    font-size: 13px;
+.games{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:22px;
 }
-
-@media(max-width: 600px) {
-    header {
-        padding: 0 15px;
-    }
-
-    .header-right {
-        font-size: 11px;
-    }
-
-    .hero {
-        min-height: 420px;
-    }
+.game-card{
+  background:#101810;
+  border:1px solid #285321;
+  border-radius:15px;
+  overflow:hidden;
+  position:relative;
+  text-decoration:none;
+  color:white;
+  transition:.2s;
+}
+.game-card:hover{
+  transform:translateY(-6px);
+  border-color:#7bff4e;
+  box-shadow:0 0 25px #3cff3540;
+}
+.game-art{
+  height:155px;
+  display:grid;
+  place-items:center;
+  font-size:75px;
+  background:linear-gradient(140deg,#174a13,#061206);
+}
+.game-card h3{margin:14px 15px 5px}
+.game-card p{
+  margin:0 15px 17px;
+  color:#a9c9a3;
+  font-size:14px;
+}
+.star{
+  position:absolute;
+  top:9px;
+  right:9px;
+  border:1px solid #43ff35;
+  background:#061307;
+  color:#65ff40;
+  border-radius:50%;
+  width:35px;
+  height:35px;
+  font-size:20px;
+  cursor:pointer;
+}
+.coming .game-art{filter:grayscale(.5)}
+footer{
+  padding:25px;
+  color:#77936f;
+  text-align:center;
+  font-size:13px;
+}
+@media(max-width:750px){
+  header{padding:10px;height:auto;flex-wrap:wrap}
+  .top-right{width:100%;flex-wrap:wrap}
+  .info{font-size:12px;padding:9px}
+  .search{flex:1;width:100%;min-width:100px}
+  .hero{min-height:570px;padding-top:45px}
+  .logo-big{width:115px;height:115px;font-size:62px}
+  h1{font-size:48px}
+  .promo{height:85px}
 }
 </style>
 </head>
@@ -210,69 +281,140 @@ footer {
 <body>
 
 <header>
-    <div class="logo">🥝 KIWI BOWLING</div>
-    <div class="header-right">KIWI ARCADE</div>
+  <a class="brand" href="index.html">
+    <div class="kiwi-icon">🥝</div>
+    kiwi
+  </a>
+
+  <div class="top-right">
+    <div class="info" id="clock">◷ --:--</div>
+    <div class="info">🟡 66°F</div>
+    <div class="info">⌁ 130 ms</div>
+    <input class="search" id="search" placeholder="⌕  search">
+    <button class="color-button" onclick="changeTheme()">🌈</button>
+  </div>
 </header>
 
 <section class="hero">
+  <div class="wave one"></div>
+  <div class="wave two"></div>
+  <div class="wave three"></div>
 
-    <div class="bowling-icon">🎳</div>
+  <div class="logo-big">🥝</div>
+  <h1>kiwi</h1>
 
-    <h1>Welcome to <span>Kiwi Bowling!</span></h1>
+  <div class="bookmark">
+    <kbd>ctrl</kbd> &nbsp; + &nbsp; <kbd>D</kbd>
+    &nbsp; to bookmark
+  </div>
 
-    <p>Your virtual bowling alley is ready. Pick up a ball and bowl!</p>
+  <a class="tiktok"
+     href="https://www.tiktok.com/"
+     target="_blank">
+    <span style="font-size:27px">♪</span>
+    &nbsp; find more kiwi links on tiktok
+  </a>
 
-    <a href="bowling.html" class="play-button">
-        PLAY BOWLING →
-    </a>
-
+  <div class="promo">
+    <strong>KIWI GAMES</strong>
+    <span>PLAY SOMETHING FUN</span>
+  </div>
 </section>
 
-<section class="section">
+<section class="games-section">
+  <div class="game-toolbar">
+    <label for="sort">sort</label>
+    <select id="sort">
+      <option value="default">most relevant</option>
+      <option value="az">A to Z</option>
+    </select>
+  </div>
 
-    <h2>GAME MODES</h2>
+  <div class="games" id="games">
 
-    <div class="cards">
+    <a class="game-card" href="bowling.html"
+       data-name="Kiwi Bowling">
+      <button class="star" onclick="favorite(event,this)">☆</button>
+      <div class="game-art">🎳</div>
+      <h3>Kiwi Bowling</h3>
+      <p>Knock down all ten pins!</p>
+    </a>
 
-        <div class="card">
-            <div class="card-icon">👤</div>
-            <h3>Single Player</h3>
-            <p>Play by yourself and see how high you can score!</p>
-        </div>
-
-        <div class="card">
-            <div class="card-icon">👥</div>
-            <h3>Two Players</h3>
-            <p>Take turns bowling and compete for the highest score.</p>
-        </div>
-
-        <div class="card">
-            <div class="card-icon">🏆</div>
-            <h3>10 Frames</h3>
-            <p>Play a full bowling game with strikes, spares, and scoring.</p>
-        </div>
-
+    <div class="game-card coming" data-name="Coming Soon">
+      <div class="game-art">🎮</div>
+      <h3>Coming Soon</h3>
+      <p>More Kiwi games are on the way.</p>
     </div>
 
-    <div class="preview">
-        <h2>WELCOME TO KIWI LANES</h2>
-
-        <div class="preview-lane">
-            🎳
-        </div>
-
-        <p>10 pins. One lane. Can you bowl a perfect game?</p>
-
-        <a href="bowling.html" class="play-button">
-            START PLAYING
-        </a>
+    <div class="game-card coming" data-name="Coming Soon">
+      <div class="game-art">🕹️</div>
+      <h3>Coming Soon</h3>
+      <p>New games coming soon.</p>
     </div>
 
+  </div>
 </section>
 
 <footer>
-    🥝 KIWI BOWLING ARCADE · HAVE FUN!
+  Kiwi Games · Have fun playing!
 </footer>
+
+<script>
+function updateClock(){
+  document.getElementById("clock").textContent =
+    "◷ " + new Date().toLocaleTimeString([],{
+      hour:"2-digit",minute:"2-digit"
+    });
+}
+updateClock();
+setInterval(updateClock,1000);
+
+function favorite(event,button){
+  event.preventDefault();
+  event.stopPropagation();
+  button.textContent =
+    button.textContent==="☆" ? "★" : "☆";
+}
+
+document.getElementById("search").addEventListener("input",function(){
+  const query=this.value.toLowerCase();
+  document.querySelectorAll(".game-card").forEach(card=>{
+    card.style.display =
+      card.dataset.name.toLowerCase().includes(query)
+      ? "" : "none";
+  });
+});
+
+document.getElementById("sort").addEventListener("change",function(){
+  const games=document.getElementById("games");
+  const cards=[...games.children];
+
+  if(this.value==="az"){
+    cards.sort((a,b)=>
+      a.dataset.name.localeCompare(b.dataset.name)
+    );
+  }else{
+    cards.sort((a,b)=>
+      a.dataset.name==="Kiwi Bowling" ? -1 :
+      b.dataset.name==="Kiwi Bowling" ? 1 : 0
+    );
+  }
+
+  cards.forEach(card=>games.appendChild(card));
+});
+
+let alternate=false;
+function changeTheme(){
+  alternate=!alternate;
+  document.body.style.setProperty(
+    "--unused",""
+  );
+  document.querySelector(".hero").style.background =
+    alternate
+      ? "radial-gradient(ellipse,#123b20aa,transparent 75%)"
+      : "transparent";
+}
+</script>
 
 </body>
 </html>
