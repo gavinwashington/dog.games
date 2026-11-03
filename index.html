@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kiwi Homepage</title>
+<title>Kiwi Bowling Arcade</title>
 
 <style>
 * {
@@ -13,210 +13,195 @@
 
 body {
     margin: 0;
-    background: #080b09;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse at 50% 45%, #105518, transparent 65%),
+        #020702;
     color: white;
     font-family: Arial, sans-serif;
-    min-height: 100vh;
 }
 
+/* HEADER */
+
 header {
-    padding: 25px;
+    height: 75px;
+    background: rgba(0,0,0,.8);
+    border-bottom: 1px solid #245b26;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 30px;
 }
 
 .logo {
-    font-size: 27px;
+    color: #39ff14;
+    font-size: 25px;
     font-weight: bold;
-    color: #65ff85;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
-.bookmark {
-    color: #888;
-    font-size: 12px;
+.header-right {
+    color: #a8cba8;
+    font-size: 14px;
 }
 
-main {
-    max-width: 950px;
-    margin: 65px auto;
-    padding: 20px;
+/* HERO */
+
+.hero {
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     text-align: center;
+    padding: 45px 20px;
+}
+
+.bowling-icon {
+    font-size: 95px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 25px #39ff1470);
 }
 
 .hero h1 {
-    font-size: 55px;
-    margin-bottom: 10px;
+    font-size: clamp(40px, 7vw, 68px);
+    margin: 0;
+    color: white;
 }
 
 .hero h1 span {
-    color: #65ff85;
+    color: #39ff14;
 }
 
 .hero p {
-    color: #888;
-    margin-bottom: 35px;
+    color: #a6cba6;
+    font-size: 18px;
+    margin: 15px 0 30px;
 }
 
-.search {
-    width: 100%;
-    max-width: 600px;
-    padding: 17px 22px;
-    border: 1px solid #26372a;
-    border-radius: 14px;
-    background: #111713;
-    color: white;
-    font-size: 16px;
-    outline: none;
+.play-button {
+    display: inline-block;
+    padding: 17px 48px;
+    background: #39e52d;
+    color: #031003;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 0 25px #39ff1450;
+    transition: .2s;
 }
 
-.search:focus {
-    border-color: #65ff85;
-}
-
-.section-title {
-    text-align: left;
-    margin: 45px 0 18px;
-    color: #aaa;
-    font-size: 14px;
-    letter-spacing: 2px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-    gap: 15px;
-}
-
-.site-tile {
-    position: relative;
-    background: #111713;
-    border: 1px solid #26372a;
-    border-radius: 15px;
-    padding: 28px 12px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.site-tile:hover {
+.play-button:hover {
     transform: translateY(-4px);
-    border-color: #65ff85;
-    background: #17221a;
+    background: #75ff65;
+    box-shadow: 0 0 35px #39ff1480;
 }
 
-.site-icon {
-    font-size: 36px;
+/* GAME INFORMATION */
+
+.section {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 25px 20px 60px;
+}
+
+.section h2 {
+    text-align: center;
+    color: #65ff65;
+    margin-bottom: 25px;
+    font-size: 27px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.card {
+    background: #091409;
+    border: 1px solid #245b26;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    transition: .2s;
+}
+
+.card:hover {
+    border-color: #65ff65;
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px #39ff1420;
+}
+
+.card-icon {
+    font-size: 40px;
     margin-bottom: 12px;
 }
 
-.site-name {
-    font-weight: bold;
+.card h3 {
+    color: #baffb5;
+    margin: 5px 0 10px;
 }
 
-.favorite {
-    position: absolute;
-    right: 10px;
-    top: 9px;
-    border: none;
-    background: transparent;
-    color: #777;
-    font-size: 20px;
-    cursor: pointer;
+.card p {
+    color: #9ab49a;
+    line-height: 1.5;
+    font-size: 14px;
 }
 
-.favorite.active {
-    color: #65ff85;
+/* GAME PREVIEW */
+
+.preview {
+    max-width: 800px;
+    margin: 35px auto;
+    padding: 25px;
+    background: linear-gradient(135deg, #102c12, #061006);
+    border: 1px solid #28652b;
+    border-radius: 18px;
+    text-align: center;
 }
 
-/* POPUP */
+.preview h2 {
+    color: #65ff65;
+}
 
-.overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    background: rgba(0,0,0,0.85);
-    align-items: center;
+.preview-lane {
+    width: 100%;
+    max-width: 380px;
+    height: 155px;
+    margin: 20px auto;
+    background: linear-gradient(90deg, #a66b32, #d49b5c, #a66b32);
+    border: 5px solid #75451f;
+    border-radius: 12px;
+    display: flex;
     justify-content: center;
-    padding: 15px;
+    align-items: flex-start;
+    padding-top: 15px;
+    font-size: 32px;
 }
 
-.popup {
-    width: 100%;
-    max-width: 950px;
-    height: 85vh;
-    background: #111713;
-    border: 1px solid #65ff85;
-    border-radius: 15px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.popup-header {
-    height: 55px;
-    background: #18221b;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 15px;
-    flex-shrink: 0;
-}
-
-.popup-title {
-    font-weight: bold;
-}
-
-.popup-controls {
-    display: flex;
-    gap: 10px;
-}
-
-.popup-controls button {
-    border: none;
-    border-radius: 7px;
-    padding: 8px 13px;
-    background: #29372d;
-    color: white;
-    cursor: pointer;
-}
-
-.popup-controls button:hover {
-    background: #65ff85;
-    color: black;
-}
-
-.frame-container {
-    flex: 1;
-    position: relative;
-}
-
-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: white;
-}
+/* FOOTER */
 
 footer {
+    padding: 25px;
     text-align: center;
-    color: #555;
-    font-size: 12px;
-    padding: 30px;
+    border-top: 1px solid #17451a;
+    color: #688968;
+    font-size: 13px;
 }
 
 @media(max-width: 600px) {
-    main {
-        margin-top: 35px;
+    header {
+        padding: 0 15px;
     }
 
-    .hero h1 {
-        font-size: 40px;
+    .header-right {
+        font-size: 11px;
     }
 
-    .popup {
-        height: 90vh;
+    .hero {
+        min-height: 420px;
     }
 }
 </style>
@@ -225,214 +210,69 @@ footer {
 <body>
 
 <header>
-    <div class="logo">KIWI.</div>
-    <div class="bookmark">CTRL + D TO BOOKMARK</div>
+    <div class="logo">🥝 KIWI BOWLING</div>
+    <div class="header-right">KIWI ARCADE</div>
 </header>
 
-<main>
+<section class="hero">
 
-    <div class="hero">
-        <h1>Welcome to <span>Kiwi.</span></h1>
-        <p>Your internet. Your homepage.</p>
+    <div class="bowling-icon">🎳</div>
 
-        <input
-            class="search"
-            id="searchBar"
-            type="text"
-            placeholder="Search your websites..."
-        >
+    <h1>Welcome to <span>Kiwi Bowling!</span></h1>
+
+    <p>Your virtual bowling alley is ready. Pick up a ball and bowl!</p>
+
+    <a href="bowling.html" class="play-button">
+        PLAY BOWLING →
+    </a>
+
+</section>
+
+<section class="section">
+
+    <h2>GAME MODES</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-icon">👤</div>
+            <h3>Single Player</h3>
+            <p>Play by yourself and see how high you can score!</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">👥</div>
+            <h3>Two Players</h3>
+            <p>Take turns bowling and compete for the highest score.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🏆</div>
+            <h3>10 Frames</h3>
+            <p>Play a full bowling game with strikes, spares, and scoring.</p>
+        </div>
+
     </div>
 
-    <div class="section-title">YOUR WEBSITES</div>
+    <div class="preview">
+        <h2>WELCOME TO KIWI LANES</h2>
 
-    <div class="grid" id="siteGrid"></div>
+        <div class="preview-lane">
+            🎳
+        </div>
 
-    <div class="section-title">FAVORITES</div>
+        <p>10 pins. One lane. Can you bowl a perfect game?</p>
 
-    <div class="grid" id="favoriteGrid"></div>
+        <a href="bowling.html" class="play-button">
+            START PLAYING
+        </a>
+    </div>
 
-</main>
+</section>
 
 <footer>
-    KIWI HOMEPAGE · YOUR WEB STARTS HERE
+    🥝 KIWI BOWLING ARCADE · HAVE FUN!
 </footer>
-
-<!-- POPUP WINDOW -->
-
-<div class="overlay" id="siteOverlay">
-
-    <div class="popup">
-
-        <div class="popup-header">
-
-            <div class="popup-title" id="popupTitle">
-                Website
-            </div>
-
-            <div class="popup-controls">
-                <button onclick="reloadPopup()">↻</button>
-                <button onclick="closePopup()">✕</button>
-            </div>
-
-        </div>
-
-        <div class="frame-container">
-            <iframe
-                id="siteFrame"
-                title="Website viewer"
-                src="about:blank"
-            ></iframe>
-        </div>
-
-    </div>
-
-</div>
-
-<script>
-
-// WEBSITE LIST
-
-const sites = [
-    {
-        name: "DuckDuckGo",
-        url: "https://duckduckgo.com",
-        icon: "🦆"
-    },
-    {
-        name: "TikTok",
-        url: "https://www.tiktok.com",
-        icon: "🎵"
-    },
-    {
-        name: "Twitch",
-        url: "https://www.twitch.tv",
-        icon: "🟣"
-    }
-];
-
-let favorites = [];
-let currentSite = null;
-
-// LOAD WEBSITE TILES
-
-function loadSites() {
-    const grid = document.getElementById("siteGrid");
-    const favoriteGrid = document.getElementById("favoriteGrid");
-
-    grid.innerHTML = "";
-    favoriteGrid.innerHTML = "";
-
-    sites.forEach((site, index) => {
-
-        const tile = document.createElement("div");
-        tile.className = "site-tile";
-
-        const icon = document.createElement("div");
-        icon.className = "site-icon";
-        icon.textContent = site.icon;
-
-        const name = document.createElement("div");
-        name.className = "site-name";
-        name.textContent = site.name;
-
-        const favorite = document.createElement("button");
-        favorite.className = "favorite";
-        favorite.textContent = favorites.includes(index) ? "★" : "☆";
-
-        if (favorites.includes(index)) {
-            favorite.classList.add("active");
-        }
-
-        favorite.onclick = (event) => {
-            event.stopPropagation();
-            toggleFavorite(index);
-        };
-
-        tile.append(icon, name, favorite);
-        tile.onclick = () => openSite(index);
-
-        grid.appendChild(tile);
-
-        if (favorites.includes(index)) {
-            const favoriteTile = tile.cloneNode(true);
-            favoriteTile.onclick = () => openSite(index);
-
-            favoriteTile.querySelector(".favorite").onclick = (event) => {
-                event.stopPropagation();
-                toggleFavorite(index);
-            };
-
-            favoriteGrid.appendChild(favoriteTile);
-        }
-
-    });
-}
-
-// OPEN WEBSITE
-
-function openSite(index) {
-    const site = sites[index];
-
-    currentSite = site;
-
-    document.getElementById("popupTitle").textContent = site.name;
-    document.getElementById("siteFrame").src = site.url;
-    document.getElementById("siteOverlay").style.display = "flex";
-}
-
-// CLOSE POPUP
-
-function closePopup() {
-    document.getElementById("siteOverlay").style.display = "none";
-    document.getElementById("siteFrame").src = "about:blank";
-    currentSite = null;
-}
-
-// RELOAD WEBSITE
-
-function reloadPopup() {
-    if (currentSite) {
-        document.getElementById("siteFrame").src = currentSite.url;
-    }
-}
-
-// FAVORITES
-
-function toggleFavorite(index) {
-    if (favorites.includes(index)) {
-        favorites = favorites.filter(item => item !== index);
-    } else {
-        favorites.push(index);
-    }
-
-    loadSites();
-}
-
-// SEARCH
-
-document.getElementById("searchBar").addEventListener("input", function() {
-    const query = this.value.toLowerCase();
-
-    document.querySelectorAll("#siteGrid .site-tile").forEach((tile, index) => {
-        const name = sites[index].name.toLowerCase();
-
-        tile.style.display = name.includes(query) ? "" : "none";
-    });
-});
-
-// ESCAPE TO CLOSE
-
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Escape") {
-        closePopup();
-    }
-});
-
-// START
-
-loadSites();
-
-</script>
 
 </body>
 </html>
