@@ -4,138 +4,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kiwi Feud</title>
+<title>Dog Doin Feud</title>
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:#071008;
-  color:white;
-  font-family:Arial,sans-serif;
-  text-align:center;
+ margin:0;
+ background:radial-gradient(ellipse at center,#07520b,#001000 65%,#000);
+ color:white;font-family:Arial,sans-serif;text-align:center;
 }
 header{
-  padding:18px;
-  background:#101e11;
-  border-bottom:1px solid #286b20;
+ background:#000e;border-bottom:1px solid #286b20;padding:17px;
 }
 header a{color:#8cff65;text-decoration:none}
-h1{color:#8cff65;margin:8px}
-main{max-width:750px;margin:30px auto;padding:15px}
+h1{color:#8cff65;margin:10px}
+main{max-width:800px;margin:25px auto;padding:12px}
+.stats{
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:12px;margin-bottom:20px;
+}
+.stat{
+ padding:17px 10px;border:1px solid #286b20;
+ border-radius:13px;background:#102014;
+}
+.stat strong{
+ display:block;color:#8cff65;font-size:27px;margin-top:7px;
+}
 .card{
-  background:#102014;
-  border:1px solid #286b20;
-  border-radius:18px;
-  padding:25px;
-  margin:15px 0;
+ background:#102014;border:1px solid #286b20;
+ border-radius:17px;padding:23px;margin-bottom:18px;
 }
-.category{
-  color:#8cff65;
-  font-weight:bold;
-  letter-spacing:2px;
-}
-.question{
-  font-size:clamp(23px,5vw,36px);
-  font-weight:bold;
-  margin:22px 0;
-}
+.category{color:#8cff65;font-weight:bold;letter-spacing:2px}
+.question{font-size:clamp(25px,5vw,38px);font-weight:bold;margin:22px 0}
 input{
-  width:min(100%,450px);
-  padding:16px;
-  background:#061007;
-  color:white;
-  border:1px solid #58c83e;
-  border-radius:12px;
-  font-size:17px;
-  outline:none;
+ width:min(100%,450px);padding:16px;background:#061007;
+ color:white;border:1px solid #58c83e;border-radius:12px;
+ font-size:17px;outline:none;
 }
 button{
-  padding:14px 20px;
-  border:0;
-  border-radius:10px;
-  background:#8cff65;
-  color:#102010;
-  font-weight:bold;
-  font-size:16px;
-  cursor:pointer;
-  margin:7px;
+ padding:13px 20px;border:0;border-radius:10px;
+ background:#8cff65;color:#102010;font-weight:bold;
+ font-size:15px;cursor:pointer;margin:6px;
 }
 button:disabled{opacity:.4;cursor:not-allowed}
-.stats{
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  flex-wrap:wrap;
-  font-size:18px;
-  margin:20px;
-}
+.giveup{background:#e65b5b;color:white}
+.secondary{background:#263c29;color:white;border:1px solid #527c4c}
+#message{min-height:26px;margin-top:14px;color:#baff9e}
 #answers{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:20px;
+ display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;
 }
 .answer{
-  background:#17291a;
-  border:1px solid #315c2b;
-  border-radius:10px;
-  min-height:60px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px;
-  text-align:left;
+ min-height:62px;display:flex;align-items:center;
+ justify-content:space-between;gap:10px;padding:12px;
+ background:#17291a;border:1px solid #315c2b;
+ border-radius:10px;text-align:left;
 }
-.answer span:last-child{color:#8cff65;font-weight:bold}
-.empty{color:#81917d}
-#message{min-height:25px;color:#baff9e}
-#strikes{color:#ff7777;font-size:22px}
-@media(max-width:480px){
-  #answers{grid-template-columns:1fr}
+.answer.found{border-color:#70ff46;background:#1b3820}
+.answer .points{color:#8cff65;font-weight:bold;white-space:nowrap}
+.answer .hidden{color:#81917d}
+#next{display:none;font-size:17px;padding:15px 30px}
+.small{color:#a9c9a3;font-size:13px}
+@media(max-width:500px){
+ #answers{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <a href="index.html">← Back to Kiwi</a>
-  <h1>🥝 KIWI FEUD</h1>
-  <div>Guess the search completions!</div>
+ <a href="index.html">← What The Dog Doin?</a>
+ <h1>🐶 DOG DOIN FEUD</h1>
+ <div>Guess the top 10 answers!</div>
 </header>
 
 <main>
-  <div class="stats">
-    <div>⭐ Score: <strong id="score">0</strong></div>
-    <div>❌ Strikes: <strong id="strikes">0/3</strong></div>
-    <div>🏆 Round: <strong id="round">1</strong></div>
+
+ <div class="stats">
+  <div class="stat">
+   Lifetime Points
+   <strong id="lifetime">0</strong>
   </div>
+  <div class="stat">
+   This Game Points
+   <strong id="gamePoints">0</strong>
+  </div>
+  <div class="stat">
+   Strikes
+   <strong id="strikes">0 / 3</strong>
+  </div>
+  <div class="stat">
+   Round
+   <strong id="round">1</strong>
+  </div>
+ </div>
 
-  <section class="card">
-    <div class="category" id="category">SEARCHES</div>
-    <div class="question" id="question">
-      Why do cats...
-    </div>
+ <section class="card">
+  <div class="category" id="category">ANIMALS</div>
+  <div class="question" id="question">Why do cats...</div>
 
-    <input id="guess" placeholder="Type your guess..." autocomplete="off">
-    <br>
-    <button onclick="submitGuess()">GUESS</button>
-    <button onclick="skipRound()">SKIP ROUND</button>
+  <input id="guess" placeholder="Type your guess..." autocomplete="off">
+  <br>
 
-    <div id="message"></div>
-  </section>
+  <button id="guessButton" onclick="submitGuess()">SUBMIT GUESS</button>
+  <button class="giveup" id="giveup" onclick="giveUp()">GIVE UP</button>
 
-  <section class="card">
-    <h2>Top 10 Answers</h2>
-    <div id="answers"></div>
-  </section>
+  <div id="message">Find all 10 answers!</div>
+ </section>
 
-  <button onclick="nextRound()" id="next" hidden>
-    NEXT ROUND →
-  </button>
+ <section class="card">
+  <h2>🏆 Top 10 Answers</h2>
+  <p class="small">Each answer has its own point value.</p>
+  <div id="answers"></div>
+ </section>
+
+ <button id="next" onclick="nextRound()">NEXT ROUND →</button>
+
 </main>
 
 <script>
-const rounds = [
+const rounds=[
 {
  category:"ANIMALS",
  question:"Why do cats...",
@@ -234,125 +220,176 @@ const rounds = [
 }
 ];
 
-let current=0;
-let score=0;
+let currentRound=0;
+let roundNumber=1;
+let gamePoints=0;
 let strikes=0;
 let found=[];
 let finished=false;
 
-const question=document.getElementById("question");
-const category=document.getElementById("category");
-const answers=document.getElementById("answers");
-const guess=document.getElementById("guess");
-const message=document.getElementById("message");
-const next=document.getElementById("next");
+const STORAGE_KEY="dogDoinFeudLifetimePoints";
+
+let lifetimePoints=Number(
+ localStorage.getItem(STORAGE_KEY)||0
+);
+
+const questionEl=document.getElementById("question");
+const categoryEl=document.getElementById("category");
+const answersEl=document.getElementById("answers");
+const guessEl=document.getElementById("guess");
+const messageEl=document.getElementById("message");
+const nextButton=document.getElementById("next");
 
 function normalize(text){
  return text.toLowerCase().trim()
- .replace(/[.,!?']/g,"")
- .replace(/\s+/g," ");
-}
-
-function loadRound(){
- const data=rounds[current%rounds.length];
- category.textContent=data.category;
- question.textContent=data.question;
- found=[];
- strikes=0;
- finished=false;
- guess.value="";
- guess.disabled=false;
- next.hidden=true;
- message.textContent="Find the 10 answers!";
- updateStats();
- renderAnswers();
- guess.focus();
+  .replace(/[.,!?']/g,"")
+  .replace(/\s+/g," ");
 }
 
 function updateStats(){
- document.getElementById("score").textContent=score;
- document.getElementById("strikes").textContent=strikes+"/3";
- document.getElementById("round").textContent=current+1;
+ document.getElementById("lifetime").textContent=
+  lifetimePoints.toLocaleString();
+
+ document.getElementById("gamePoints").textContent=
+  gamePoints.toLocaleString();
+
+ document.getElementById("strikes").textContent=
+  strikes+" / 3";
+
+ document.getElementById("round").textContent=
+  roundNumber;
+}
+
+function loadRound(){
+ const data=rounds[currentRound];
+
+ found=[];
+ strikes=0;
+ finished=false;
+
+ categoryEl.textContent=data.category;
+ questionEl.textContent=data.question;
+
+ guessEl.value="";
+ guessEl.disabled=false;
+
+ document.getElementById("guessButton").disabled=false;
+ document.getElementById("giveup").disabled=false;
+
+ nextButton.style.display="none";
+ messageEl.textContent="Find all 10 answers!";
+
+ updateStats();
+ renderAnswers();
 }
 
 function renderAnswers(){
- const data=rounds[current%rounds.length];
- answers.innerHTML="";
+ const data=rounds[currentRound];
+ answersEl.innerHTML="";
 
  data.answers.forEach((answer,index)=>{
   const box=document.createElement("div");
   box.className="answer";
 
-  if(found.includes(index)){
-   const text=document.createElement("span");
-   text.textContent=(index+1)+". "+answer[0];
+  if(found.includes(index)||finished){
+   box.classList.add("found");
+
+   const label=document.createElement("span");
+   label.textContent=(index+1)+". "+answer[0];
+
    const points=document.createElement("span");
-   points.textContent="+"+answer[1];
-   box.append(text,points);
+   points.className="points";
+   points.textContent=answer[1]+" pts";
+
+   box.append(label,points);
   }else{
-   box.innerHTML='<span class="empty">'+(index+1)+'. ???</span><span>—</span>';
+   const hidden=document.createElement("span");
+   hidden.className="hidden";
+   hidden.textContent=(index+1)+". ???";
+
+   const points=document.createElement("span");
+   points.className="points";
+   points.textContent="???";
+
+   box.append(hidden,points);
   }
 
-  answers.appendChild(box);
+  answersEl.appendChild(box);
  });
 }
 
 function submitGuess(){
  if(finished)return;
 
- const value=normalize(guess.value);
+ const value=normalize(guessEl.value);
  if(!value)return;
 
- const data=rounds[current%rounds.length];
+ const data=rounds[currentRound];
 
  const index=data.answers.findIndex((answer,i)=>
-  normalize(answer[0])===value && !found.includes(i)
+  normalize(answer[0])===value&&!found.includes(i)
  );
 
  if(index!==-1){
   found.push(index);
-  score+=data.answers[index][1];
-  message.textContent="🎉 CORRECT! +"+data.answers[index][1]+" points!";
+
+  const points=data.answers[index][1];
+  gamePoints+=points;
+  lifetimePoints+=points;
+
+  localStorage.setItem(STORAGE_KEY,lifetimePoints);
+
+  messageEl.textContent="🎉 CORRECT! You earned "+points+" points!";
   renderAnswers();
  }else{
   strikes++;
-  message.textContent="❌ Nope! Try another answer.";
+  messageEl.textContent="❌ Incorrect! Try another answer.";
  }
 
- guess.value="";
+ guessEl.value="";
  updateStats();
 
  if(found.length===10){
   endRound("🏆 YOU FOUND ALL 10 ANSWERS!");
  }else if(strikes>=3){
-  endRound("GAME OVER FOR THIS ROUND!");
+  endRound("3 STRIKES! Round over!");
  }
 
- guess.focus();
+ guessEl.focus();
+}
+
+function giveUp(){
+ if(finished)return;
+ endRound("🐶 You gave up! Here are all 10 answers.");
 }
 
 function endRound(text){
  finished=true;
- guess.disabled=true;
- message.textContent=text;
- next.hidden=false;
- renderAnswers();
-}
+ guessEl.disabled=true;
+ document.getElementById("guessButton").disabled=true;
+ document.getElementById("giveup").disabled=true;
 
-function skipRound(){
- if(finished)return;
- endRound("Round skipped!");
+ messageEl.textContent=text;
+ renderAnswers();
+ nextButton.style.display="inline-block";
 }
 
 function nextRound(){
- current++;
+ currentRound++;
+
+ if(currentRound>=rounds.length){
+  currentRound=0;
+ }
+
+ roundNumber++;
  loadRound();
 }
 
-guess.addEventListener("keydown",e=>{
- if(e.key==="Enter")submitGuess();
+guessEl.addEventListener("keydown",event=>{
+ if(event.key==="Enter")submitGuess();
 });
 
+updateStats();
 loadRound();
 </script>
 </body>
