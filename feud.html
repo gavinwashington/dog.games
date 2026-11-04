@@ -5,69 +5,161 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dog Doin Feud</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
  margin:0;
  background:radial-gradient(ellipse at center,#07520b,#001000 65%,#000);
- color:white;font-family:Arial,sans-serif;text-align:center;
+ color:white;
+ font-family:Arial,sans-serif;
+ text-align:center;
 }
+
 header{
- background:#000e;border-bottom:1px solid #286b20;padding:17px;
+ background:#000e;
+ border-bottom:1px solid #286b20;
+ padding:17px;
 }
+
 header a{color:#8cff65;text-decoration:none}
+
 h1{color:#8cff65;margin:10px}
-main{max-width:800px;margin:25px auto;padding:12px}
+
+main{max-width:850px;margin:25px auto;padding:12px}
+
 .stats{
- display:grid;grid-template-columns:repeat(2,1fr);
- gap:12px;margin-bottom:20px;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+ margin-bottom:20px;
 }
+
 .stat{
- padding:17px 10px;border:1px solid #286b20;
- border-radius:13px;background:#102014;
+ padding:17px 10px;
+ border:1px solid #286b20;
+ border-radius:13px;
+ background:#102014;
 }
+
 .stat strong{
- display:block;color:#8cff65;font-size:27px;margin-top:7px;
+ display:block;
+ color:#8cff65;
+ font-size:27px;
+ margin-top:7px;
 }
+
 .card{
- background:#102014;border:1px solid #286b20;
- border-radius:17px;padding:23px;margin-bottom:18px;
+ background:#102014;
+ border:1px solid #286b20;
+ border-radius:17px;
+ padding:23px;
+ margin-bottom:18px;
 }
-.category{color:#8cff65;font-weight:bold;letter-spacing:2px}
-.question{font-size:clamp(25px,5vw,38px);font-weight:bold;margin:22px 0}
+
+.category{
+ color:#8cff65;
+ font-weight:bold;
+ letter-spacing:2px;
+}
+
+.question{
+ font-size:clamp(25px,5vw,38px);
+ font-weight:bold;
+ margin:22px 0;
+}
+
 input{
- width:min(100%,450px);padding:16px;background:#061007;
- color:white;border:1px solid #58c83e;border-radius:12px;
- font-size:17px;outline:none;
+ width:min(100%,450px);
+ padding:16px;
+ background:#061007;
+ color:white;
+ border:1px solid #58c83e;
+ border-radius:12px;
+ font-size:17px;
+ outline:none;
 }
+
 button{
- padding:13px 20px;border:0;border-radius:10px;
- background:#8cff65;color:#102010;font-weight:bold;
- font-size:15px;cursor:pointer;margin:6px;
+ padding:13px 20px;
+ border:0;
+ border-radius:10px;
+ background:#8cff65;
+ color:#102010;
+ font-weight:bold;
+ font-size:15px;
+ cursor:pointer;
+ margin:6px;
 }
-button:disabled{opacity:.4;cursor:not-allowed}
+
+button:disabled{
+ opacity:.4;
+ cursor:not-allowed;
+}
+
 .giveup{background:#e65b5b;color:white}
-.secondary{background:#263c29;color:white;border:1px solid #527c4c}
-#message{min-height:26px;margin-top:14px;color:#baff9e}
+
+.secondary{
+ background:#263c29;
+ color:white;
+ border:1px solid #527c4c;
+}
+
+#message{
+ min-height:26px;
+ margin-top:14px;
+ color:#baff9e;
+}
+
 #answers{
- display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+ margin-top:18px;
 }
+
 .answer{
- min-height:62px;display:flex;align-items:center;
- justify-content:space-between;gap:10px;padding:12px;
- background:#17291a;border:1px solid #315c2b;
- border-radius:10px;text-align:left;
+ min-height:62px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:12px;
+ background:#17291a;
+ border:1px solid #315c2b;
+ border-radius:10px;
+ text-align:left;
 }
-.answer.found{border-color:#70ff46;background:#1b3820}
-.answer .points{color:#8cff65;font-weight:bold;white-space:nowrap}
+
+.answer.found{
+ border-color:#70ff46;
+ background:#1b3820;
+}
+
+.answer .points{
+ color:#8cff65;
+ font-weight:bold;
+ white-space:nowrap;
+}
+
 .answer .hidden{color:#81917d}
-#next{display:none;font-size:17px;padding:15px 30px}
+
+#next{
+ display:none;
+ font-size:17px;
+ padding:15px 30px;
+}
+
 .small{color:#a9c9a3;font-size:13px}
-@media(max-width:500px){
+
+@media(max-width:550px){
  #answers{grid-template-columns:1fr}
+ .stats{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -79,145 +171,416 @@ button:disabled{opacity:.4;cursor:not-allowed}
 <main>
 
  <div class="stats">
+
   <div class="stat">
-   Lifetime Points
-   <strong id="lifetime">0</strong>
-  </div>
-  <div class="stat">
-   This Game Points
+   Game Points
    <strong id="gamePoints">0</strong>
   </div>
+
   <div class="stat">
    Strikes
    <strong id="strikes">0 / 3</strong>
   </div>
+
   <div class="stat">
    Round
-   <strong id="round">1</strong>
+   <strong id="round">1 / 20</strong>
   </div>
+
  </div>
 
  <section class="card">
-  <div class="category" id="category">ANIMALS</div>
-  <div class="question" id="question">Why do cats...</div>
 
-  <input id="guess" placeholder="Type your guess..." autocomplete="off">
+  <div class="category" id="category">ANIMALS</div>
+
+  <div class="question" id="question"></div>
+
+  <input
+   id="guess"
+   placeholder="Type your guess..."
+   autocomplete="off"
+  >
+
   <br>
 
-  <button id="guessButton" onclick="submitGuess()">SUBMIT GUESS</button>
-  <button class="giveup" id="giveup" onclick="giveUp()">GIVE UP</button>
+  <button id="guessButton" onclick="submitGuess()">
+   SUBMIT GUESS
+  </button>
+
+  <button class="giveup" id="giveup" onclick="giveUp()">
+   GIVE UP
+  </button>
 
   <div id="message">Find all 10 answers!</div>
+
  </section>
 
  <section class="card">
+
   <h2>🏆 Top 10 Answers</h2>
-  <p class="small">Each answer has its own point value.</p>
+
+  <p class="small">
+   Guess an answer to reveal it and earn its points!
+  </p>
+
   <div id="answers"></div>
+
  </section>
 
- <button id="next" onclick="nextRound()">NEXT ROUND →</button>
+ <button id="next" onclick="nextRound()">
+  NEXT ROUND →
+ </button>
+
+ <button class="secondary" onclick="restartGame()">
+  RESTART GAME
+ </button>
 
 </main>
 
 <script>
+
 const rounds=[
+
 {
  category:"ANIMALS",
  question:"Why do cats...",
  answers:[
-  ["sleep so much",100],
-  ["purr",90],
-  ["knead blankets",80],
-  ["knock things over",70],
-  ["hate water",60],
-  ["chase lasers",50],
-  ["like boxes",40],
-  ["meow at night",30],
-  ["stare at walls",20],
-  ["have whiskers",10]
+  ["sleep so much",100,["sleep all day"]],
+  ["purr",90,["make purring sounds"]],
+  ["knead blankets",80,["make biscuits"]],
+  ["knock things over",70,["push stuff off tables"]],
+  ["hate water",60,["avoid water"]],
+  ["chase lasers",50,["chase laser pointers"]],
+  ["like boxes",40,["sit in boxes"]],
+  ["meow at night",30,["meow loudly"]],
+  ["stare at walls",20,["stare at nothing"]],
+  ["have whiskers",10,[]]
  ]
 },
+
 {
  category:"FOOD",
  question:"Why is pizza...",
  answers:[
-  ["so good",100],
-  ["so expensive",90],
-  ["round",80],
-  ["called pizza",70],
-  ["so popular",60],
-  ["cut into triangles",50],
-  ["better cold",40],
-  ["so cheesy",30],
-  ["Italian",20],
-  ["delicious",10]
+  ["so good",100,["delicious"]],
+  ["so expensive",90,["costly"]],
+  ["round",80,["a circle"]],
+  ["called pizza",70,[]],
+  ["so popular",60,[]],
+  ["cut into triangles",50,["cut into slices"]],
+  ["better cold",40,["good cold"]],
+  ["so cheesy",30,[]],
+  ["Italian",20,["from italy"]],
+  ["delicious",10,["tasty"]]
  ]
 },
+
 {
  category:"TECHNOLOGY",
- question:"How to make a...",
+ question:"What do people use computers for?",
  answers:[
-  ["website",100],
-  ["video game",90],
-  ["YouTube channel",80],
-  ["robot",70],
-  ["Discord bot",60],
-  ["computer",50],
-  ["mobile app",40],
-  ["logo",30],
-  ["animation",20],
-  ["website for free",10]
+  ["playing games",100,["gaming"]],
+  ["schoolwork",90,["homework"]],
+  ["working",80,["work"]],
+  ["watching videos",70,["youtube"]],
+  ["browsing the internet",60,["internet"]],
+  ["coding",50,["programming"]],
+  ["video calls",40,["zoom calls"]],
+  ["editing photos",30,[]],
+  ["listening to music",20,[]],
+  ["shopping",10,["online shopping"]]
  ]
 },
+
 {
  category:"SCHOOL",
  question:"Why does school...",
  answers:[
-  ["start so early",100],
-  ["give homework",90],
-  ["have tests",80],
-  ["end so late",70],
-  ["have uniforms",60],
-  ["have lunch breaks",50],
-  ["have summer vacation",40],
-  ["have grades",30],
-  ["have principals",20],
-  ["have so many rules",10]
+  ["start so early",100,[]],
+  ["give homework",90,[]],
+  ["have tests",80,[]],
+  ["end so late",70,[]],
+  ["have uniforms",60,[]],
+  ["have lunch breaks",50,[]],
+  ["have summer vacation",40,["summer break"]],
+  ["have grades",30,[]],
+  ["have principals",20,[]],
+  ["have so many rules",10,[]]
  ]
 },
+
 {
  category:"GAMING",
  question:"Why do gamers...",
  answers:[
-  ["rage",100],
-  ["play so much",90],
-  ["like Roblox",80],
-  ["need good WiFi",70],
-  ["stay up late",60],
-  ["buy gaming PCs",50],
-  ["use headsets",40],
-  ["watch streamers",30],
-  ["like Minecraft",20],
-  ["play with friends",10]
+  ["rage",100,["get mad"]],
+  ["play so much",90,["game all day"]],
+  ["like Roblox",80,[]],
+  ["need good WiFi",70,["need internet"]],
+  ["stay up late",60,["play at night"]],
+  ["buy gaming PCs",50,["buy computers"]],
+  ["use headsets",40,["wear headphones"]],
+  ["watch streamers",30,["watch gaming videos"]],
+  ["like Minecraft",20,[]],
+  ["play with friends",10,["multiplayer"]]
  ]
 },
+
 {
  category:"RANDOM",
  question:"Things you should never...",
  answers:[
-  ["forget",100],
-  ["say out loud",90],
-  ["do at school",80],
-  ["touch",70],
-  ["eat",60],
-  ["do when angry",50],
-  ["do in public",40],
-  ["put in a microwave",30],
-  ["do while driving",20],
-  ["do on the internet",10]
+  ["forget",100,[]],
+  ["say out loud",90,[]],
+  ["do at school",80,[]],
+  ["touch",70,[]],
+  ["eat",60,[]],
+  ["do when angry",50,[]],
+  ["do in public",40,[]],
+  ["put in a microwave",30,[]],
+  ["do while driving",20,[]],
+  ["do on the internet",10,[]]
+ ]
+},
+
+{
+ category:"SPORTS",
+ question:"What do you need to play sports?",
+ answers:[
+  ["a ball",100,[]],
+  ["shoes",90,["sneakers"]],
+  ["a team",80,["players"]],
+  ["a coach",70,[]],
+  ["a uniform",60,["jersey"]],
+  ["water",50,["water bottle"]],
+  ["practice",40,["training"]],
+  ["equipment",30,[]],
+  ["a field",20,["court"]],
+  ["a referee",10,["official"]]
+ ]
+},
+
+{
+ category:"MOVIES",
+ question:"What do people eat at the movies?",
+ answers:[
+  ["popcorn",100,[]],
+  ["candy",90,["sweets"]],
+  ["nachos",80,[]],
+  ["hot dogs",70,[]],
+  ["pretzels",60,[]],
+  ["chips",50,[]],
+  ["chocolate",40,[]],
+  ["ice cream",30,[]],
+  ["cookies",20,[]],
+  ["pizza",10,[]]
+ ]
+},
+
+{
+ category:"INTERNET",
+ question:"What do people do on the internet?",
+ answers:[
+  ["watch videos",100,["youtube"]],
+  ["play games",90,["gaming"]],
+  ["use social media",80,["social networking"]],
+  ["shop online",70,["online shopping"]],
+  ["chat with friends",60,["messaging"]],
+  ["listen to music",50,[]],
+  ["search for information",40,["google"]],
+  ["read news",30,[]],
+  ["learn things",20,["study"]],
+  ["send emails",10,["email"]]
+ ]
+},
+
+{
+ category:"PETS",
+ question:"What do dogs love?",
+ answers:[
+  ["treats",100,["dog treats"]],
+  ["walks",90,["going outside"]],
+  ["playing fetch",80,["fetch"]],
+  ["belly rubs",70,["belly scratches"]],
+  ["their owners",60,["people"]],
+  ["toys",50,["dog toys"]],
+  ["bones",40,[]],
+  ["running",30,[]],
+  ["sleeping",20,["napping"]],
+  ["other dogs",10,[]]
+ ]
+},
+
+{
+ category:"TRAVEL",
+ question:"What do people pack for a vacation?",
+ answers:[
+  ["clothes",100,[]],
+  ["toothbrush",90,[]],
+  ["phone",80,["cellphone"]],
+  ["charger",70,["phone charger"]],
+  ["shoes",60,[]],
+  ["money",50,["cash"]],
+  ["snacks",40,[]],
+  ["sunscreen",30,[]],
+  ["camera",20,[]],
+  ["pillow",10,[]]
+ ]
+},
+
+{
+ category:"WEATHER",
+ question:"What do people do when it rains?",
+ answers:[
+  ["use an umbrella",100,["umbrella"]],
+  ["stay inside",90,["stay home"]],
+  ["wear a raincoat",80,["rain jacket"]],
+  ["watch TV",70,[]],
+  ["play video games",60,["gaming"]],
+  ["jump in puddles",50,[]],
+  ["drive carefully",40,[]],
+  ["wear boots",30,["rain boots"]],
+  ["cancel plans",20,[]],
+  ["listen to rain",10,[]]
+ ]
+},
+
+{
+ category:"MUSIC",
+ question:"What do people use to listen to music?",
+ answers:[
+  ["headphones",100,["earphones"]],
+  ["speakers",90,[]],
+  ["phone",80,["cellphone"]],
+  ["computer",70,["pc"]],
+  ["radio",60,[]],
+  ["car stereo",50,["car radio"]],
+  ["tablet",40,["ipad"]],
+  ["television",30,["tv"]],
+  ["smartwatch",20,[]],
+  ["mp3 player",10,[]]
+ ]
+},
+
+{
+ category:"SHOPPING",
+ question:"What do people buy at a grocery store?",
+ answers:[
+  ["milk",100,[]],
+  ["bread",90,[]],
+  ["eggs",80,[]],
+  ["fruit",70,[]],
+  ["vegetables",60,["veggies"]],
+  ["cereal",50,[]],
+  ["snacks",40,[]],
+  ["cheese",30,[]],
+  ["juice",20,[]],
+  ["ice cream",10,[]]
+ ]
+},
+
+{
+ category:"TRANSPORTATION",
+ question:"How do people get to school?",
+ answers:[
+  ["school bus",100,["bus"]],
+  ["car",90,["driving"]],
+  ["walking",80,["walk"]],
+  ["bicycle",70,["bike"]],
+  ["carpool",60,[]],
+  ["train",50,[]],
+  ["subway",40,[]],
+  ["scooter",30,[]],
+  ["motorcycle",20,[]],
+  ["taxi",10,[]]
+ ]
+},
+
+{
+ category:"HOLIDAYS",
+ question:"What do people do on Christmas?",
+ answers:[
+  ["open presents",100,["unwrap gifts"]],
+  ["decorate a tree",90,["christmas tree"]],
+  ["eat dinner",80,["have a meal"]],
+  ["visit family",70,[]],
+  ["watch movies",60,[]],
+  ["sing songs",50,["caroling"]],
+  ["bake cookies",40,[]],
+  ["hang stockings",30,[]],
+  ["decorate the house",20,[]],
+  ["take pictures",10,[]]
+ ]
+},
+
+{
+ category:"HOME",
+ question:"What can you find in a living room?",
+ answers:[
+  ["couch",100,["sofa"]],
+  ["television",90,["tv"]],
+  ["table",80,["coffee table"]],
+  ["lamp",70,[]],
+  ["chairs",60,[]],
+  ["remote control",50,["remote"]],
+  ["rug",40,["carpet"]],
+  ["bookshelf",30,[]],
+  ["plants",20,[]],
+  ["pictures",10,["photos"]]
+ ]
+},
+
+{
+ category:"OCEAN",
+ question:"Name an animal that lives in the ocean.",
+ answers:[
+  ["shark",100,[]],
+  ["dolphin",90,[]],
+  ["whale",80,[]],
+  ["octopus",70,[]],
+  ["sea turtle",60,["turtle"]],
+  ["jellyfish",50,[]],
+  ["crab",40,[]],
+  ["starfish",30,["sea star"]],
+  ["seahorse",20,[]],
+  ["stingray",10,[]]
+ ]
+},
+
+{
+ category:"JOBS",
+ question:"What does a firefighter use at work?",
+ answers:[
+  ["fire truck",100,[]],
+  ["hose",90,["water hose"]],
+  ["helmet",80,[]],
+  ["uniform",70,[]],
+  ["boots",60,[]],
+  ["ladder",50,[]],
+  ["radio",40,[]],
+  ["gloves",30,[]],
+  ["mask",20,[]],
+  ["flashlight",10,[]]
+ ]
+},
+
+{
+ category:"GAMES",
+ question:"Name a popular type of video game.",
+ answers:[
+  ["adventure",100,["adventure games"]],
+  ["racing",90,["racing games"]],
+  ["sports",80,["sports games"]],
+  ["horror",70,["horror games"]],
+  ["simulation",60,["simulator"]],
+  ["puzzle",50,["puzzle games"]],
+  ["platformer",40,[]],
+  ["strategy",30,[]],
+  ["role playing",20,["rpg"]],
+  ["survival",10,["survival games"]]
  ]
 }
+
 ];
 
 let currentRound=0;
@@ -227,12 +590,6 @@ let strikes=0;
 let found=[];
 let finished=false;
 
-const STORAGE_KEY="dogDoinFeudLifetimePoints";
-
-let lifetimePoints=Number(
- localStorage.getItem(STORAGE_KEY)||0
-);
-
 const questionEl=document.getElementById("question");
 const categoryEl=document.getElementById("category");
 const answersEl=document.getElementById("answers");
@@ -241,15 +598,13 @@ const messageEl=document.getElementById("message");
 const nextButton=document.getElementById("next");
 
 function normalize(text){
- return text.toLowerCase().trim()
+ return text.toLowerCase()
+  .trim()
   .replace(/[.,!?']/g,"")
   .replace(/\s+/g," ");
 }
 
 function updateStats(){
- document.getElementById("lifetime").textContent=
-  lifetimePoints.toLocaleString();
-
  document.getElementById("gamePoints").textContent=
   gamePoints.toLocaleString();
 
@@ -257,7 +612,7 @@ function updateStats(){
   strikes+" / 3";
 
  document.getElementById("round").textContent=
-  roundNumber;
+  roundNumber+" / "+rounds.length;
 }
 
 function loadRound(){
@@ -277,10 +632,12 @@ function loadRound(){
  document.getElementById("giveup").disabled=false;
 
  nextButton.style.display="none";
+
  messageEl.textContent="Find all 10 answers!";
 
  updateStats();
  renderAnswers();
+ guessEl.focus();
 }
 
 function renderAnswers(){
@@ -322,28 +679,38 @@ function submitGuess(){
  if(finished)return;
 
  const value=normalize(guessEl.value);
+
  if(!value)return;
 
  const data=rounds[currentRound];
 
- const index=data.answers.findIndex((answer,i)=>
-  normalize(answer[0])===value&&!found.includes(i)
- );
+ const index=data.answers.findIndex((answer,i)=>{
+  if(found.includes(i))return false;
+
+  const accepted=[
+   answer[0],
+   ...(answer[2]||[])
+  ];
+
+  return accepted.some(item=>normalize(item)===value);
+ });
 
  if(index!==-1){
   found.push(index);
 
   const points=data.answers[index][1];
   gamePoints+=points;
-  lifetimePoints+=points;
 
-  localStorage.setItem(STORAGE_KEY,lifetimePoints);
+  messageEl.textContent=
+   "🎉 CORRECT! You earned "+points+" points!";
 
-  messageEl.textContent="🎉 CORRECT! You earned "+points+" points!";
   renderAnswers();
+
  }else{
   strikes++;
-  messageEl.textContent="❌ Incorrect! Try another answer.";
+
+  messageEl.textContent=
+   "❌ Incorrect! Try another answer.";
  }
 
  guessEl.value="";
@@ -352,7 +719,7 @@ function submitGuess(){
  if(found.length===10){
   endRound("🏆 YOU FOUND ALL 10 ANSWERS!");
  }else if(strikes>=3){
-  endRound("3 STRIKES! Round over!");
+  endRound("3 STRIKES! ROUND OVER!");
  }
 
  guessEl.focus();
@@ -360,37 +727,57 @@ function submitGuess(){
 
 function giveUp(){
  if(finished)return;
+
  endRound("🐶 You gave up! Here are all 10 answers.");
 }
 
 function endRound(text){
  finished=true;
+
  guessEl.disabled=true;
+
  document.getElementById("guessButton").disabled=true;
  document.getElementById("giveup").disabled=true;
 
  messageEl.textContent=text;
+
  renderAnswers();
+
  nextButton.style.display="inline-block";
 }
 
 function nextRound(){
- currentRound++;
-
- if(currentRound>=rounds.length){
-  currentRound=0;
+ if(currentRound===rounds.length-1){
+  endRound("🏆 YOU FINISHED ALL 20 ROUNDS!");
+  nextButton.style.display="none";
+  return;
  }
 
+ currentRound++;
  roundNumber++;
+
  loadRound();
 }
 
+function restartGame(){
+ currentRound=0;
+ roundNumber=1;
+ gamePoints=0;
+
+ loadRound();
+
+ messageEl.textContent="New game started! Good luck! 🐶";
+}
+
 guessEl.addEventListener("keydown",event=>{
- if(event.key==="Enter")submitGuess();
+ if(event.key==="Enter"){
+  submitGuess();
+ }
 });
 
-updateStats();
 loadRound();
+
 </script>
+
 </body>
 </html>
