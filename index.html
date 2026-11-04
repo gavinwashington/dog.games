@@ -1,216 +1,115 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kiwi</title>
+
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  background:#020a03;
   color:white;
   font-family:Arial,sans-serif;
-  overflow-x:hidden;
-}
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-2;
-  background:
-    radial-gradient(ellipse at 50% 42%,#07520b 0%,#063006 32%,#001000 65%,#000 100%);
-}
-body:after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  opacity:.45;
-  background-image:
-    radial-gradient(circle at 10% 20%,#52ff24 0 2px,transparent 4px),
-    radial-gradient(circle at 40% 15%,#52ff24 0 2px,transparent 4px),
-    radial-gradient(circle at 75% 30%,#52ff24 0 2px,transparent 4px),
-    radial-gradient(circle at 90% 60%,#52ff24 0 2px,transparent 4px),
-    radial-gradient(circle at 25% 75%,#52ff24 0 2px,transparent 4px);
-  background-size:300px 250px;
-  animation:stars 12s linear infinite;
-}
-@keyframes stars{
-  from{background-position:0 0}
-  to{background-position:300px 250px}
+  background:radial-gradient(ellipse at center,#07520b,#001000 65%,#000);
+  min-height:100vh;
 }
 header{
-  height:80px;
+  min-height:75px;
+  padding:12px 25px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 25px;
-  border-bottom:1px solid #17451a;
-  background:rgba(0,0,0,.85);
   gap:15px;
+  flex-wrap:wrap;
+  background:#000e;
+  border-bottom:1px solid #245321;
   position:sticky;
   top:0;
-  z-index:10;
+  z-index:5;
 }
 .brand{
-  display:flex;
-  align-items:center;
-  gap:13px;
   color:#59ff35;
-  font-size:27px;
+  font-size:28px;
   font-weight:bold;
   text-decoration:none;
-}
-.kiwi-icon{
-  width:47px;
-  height:47px;
-  border-radius:50%;
-  background:radial-gradient(circle,#baff87 0 27%,#1cff00 29% 65%,#063e00 68%);
-  display:grid;
-  place-items:center;
-  box-shadow:0 0 25px #20ff0080;
-  font-size:25px;
-}
-.top-right{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.info{
-  border:1px solid #245321;
-  background:#061307;
-  border-radius:15px;
-  padding:13px;
-  color:#d5f4d0;
-  white-space:nowrap;
 }
 .search{
-  width:min(36vw,480px);
-  padding:16px 20px;
-  background:#061307;
+  padding:15px;
+  width:min(400px,90vw);
+  border-radius:12px;
   border:1px solid #245321;
-  border-radius:16px;
+  background:#061307;
   color:white;
-  font-size:17px;
-  outline:none;
+  font-size:16px;
 }
-.search:focus{border-color:#62ff35}
-.color-button{
+.info{
+  padding:12px;
   border:1px solid #245321;
-  background:#061307;
-  border-radius:15px;
-  padding:13px;
-  font-size:23px;
-  cursor:pointer;
+  border-radius:12px;
+  color:#d5f4d0;
 }
 .hero{
-  min-height:620px;
-  padding:55px 15px 25px;
   text-align:center;
-  position:relative;
-  overflow:hidden;
+  padding:55px 15px 45px;
+  min-height:560px;
+  background:radial-gradient(ellipse at center,#12620b55,transparent 70%);
 }
-.wave{
-  position:absolute;
-  height:130px;
-  left:-5%;
-  width:110%;
-  border-top:2px solid #4aff3a55;
+.logo{
+  width:140px;
+  height:140px;
   border-radius:50%;
-  transform:rotate(-2deg);
-  pointer-events:none;
-}
-.wave.one{top:180px}
-.wave.two{top:280px;transform:rotate(2deg)}
-.wave.three{top:400px}
-.logo-big{
-  width:145px;
-  height:145px;
-  margin:0 auto 22px;
-  border-radius:50%;
+  background:radial-gradient(circle,#d8ffad 0 30%,#27ff00 32% 67%,#063b00 70%);
   display:grid;
   place-items:center;
-  font-size:78px;
-  background:radial-gradient(circle,#d8ffad 0 30%,#27ff00 32% 67%,#063b00 70%);
+  font-size:75px;
+  margin:auto;
   box-shadow:0 0 55px #2cff0080;
-  transform:rotate(-15deg);
-  position:relative;
 }
-h1{
-  font-size:58px;
-  margin:0 0 35px;
-  position:relative;
-}
-.bookmark{
-  display:inline-block;
+h1{font-size:55px;margin:20px}
+.bookmark,.tiktok{
+  display:table;
+  margin:15px auto;
   padding:17px 25px;
-  border:1px solid #245321;
-  background:#031006e8;
-  border-radius:15px;
-  font-size:20px;
-  color:#d4f5ce;
-  position:relative;
-}
-kbd{
-  padding:7px 13px;
-  border:1px solid #285d23;
-  border-radius:6px;
-  font-weight:bold;
-}
-.tiktok{
-  display:block;
-  width:max-content;
-  max-width:95%;
-  margin:16px auto 30px;
-  padding:17px 25px;
-  border-radius:14px;
   background:#031006ed;
-  border:1px solid #17451a;
+  border:1px solid #245321;
+  border-radius:13px;
   color:#d5f4d0;
-  font-size:20px;
+  font-size:18px;
   text-decoration:none;
-  position:relative;
 }
 .promo{
-  width:min(760px,90%);
+  max-width:760px;
+  height:100px;
   margin:35px auto 0;
-  height:105px;
-  border-radius:16px;
-  border:1px solid #31572b;
+  border-radius:15px;
   background:linear-gradient(110deg,#15101f,#31132b,#101c0d);
   display:flex;
-  justify-content:space-around;
   align-items:center;
-  position:relative;
-  overflow:hidden;
-  box-shadow:0 0 25px #0008;
-}
-.promo strong{
-  font-size:clamp(25px,5vw,55px);
-  letter-spacing:8px;
+  justify-content:space-around;
+  border:1px solid #31572b;
   color:#70ff46;
+  font-size:clamp(22px,5vw,48px);
+  font-weight:bold;
 }
-.promo span{color:#c9eac2;font-size:15px}
 .games-section{
+  background:#000b;
   border-top:6px solid #286c1e;
-  background:rgba(0,0,0,.65);
-  padding:15px 4% 60px;
+  padding:20px 4% 60px;
 }
-.game-toolbar{
+.toolbar{
   display:flex;
   justify-content:flex-end;
-  align-items:center;
-  gap:12px;
-  color:#c9eac2;
-  margin:0 0 20px;
+  margin-bottom:20px;
+  color:#baff9e;
 }
-.game-toolbar select{
+.toolbar select{
   background:#061307;
-  border:1px solid #245321;
   color:white;
-  border-radius:10px;
-  padding:12px;
+  padding:10px;
+  border:1px solid #245321;
+  border-radius:9px;
 }
 .games{
   display:grid;
@@ -218,33 +117,29 @@ kbd{
   gap:22px;
 }
 .game-card{
+  position:relative;
+  text-decoration:none;
+  color:white;
   background:#101810;
   border:1px solid #285321;
   border-radius:15px;
   overflow:hidden;
-  position:relative;
-  text-decoration:none;
-  color:white;
   transition:.2s;
 }
 .game-card:hover{
-  transform:translateY(-6px);
+  transform:translateY(-5px);
   border-color:#7bff4e;
   box-shadow:0 0 25px #3cff3540;
 }
 .game-art{
-  height:155px;
+  height:160px;
   display:grid;
   place-items:center;
-  font-size:75px;
+  font-size:80px;
   background:linear-gradient(140deg,#174a13,#061206);
 }
-.game-card h3{margin:14px 15px 5px}
-.game-card p{
-  margin:0 15px 17px;
-  color:#a9c9a3;
-  font-size:14px;
-}
+.game-card h3{margin:14px}
+.game-card p{margin:0 14px 18px;color:#a9c9a3}
 .star{
   position:absolute;
   top:9px;
@@ -258,22 +153,10 @@ kbd{
   font-size:20px;
   cursor:pointer;
 }
-.coming .game-art{filter:grayscale(.5)}
 footer{
+  text-align:center;
   padding:25px;
   color:#77936f;
-  text-align:center;
-  font-size:13px;
-}
-@media(max-width:750px){
-  header{padding:10px;height:auto;flex-wrap:wrap}
-  .top-right{width:100%;flex-wrap:wrap}
-  .info{font-size:12px;padding:9px}
-  .search{flex:1;width:100%;min-width:100px}
-  .hero{min-height:570px;padding-top:45px}
-  .logo-big{width:115px;height:115px;font-size:62px}
-  h1{font-size:48px}
-  .promo{height:85px}
 }
 </style>
 </head>
@@ -281,88 +164,74 @@ footer{
 <body>
 
 <header>
-  <a class="brand" href="index.html">
-    <div class="kiwi-icon">🥝</div>
-    kiwi
-  </a>
-
-  <div class="top-right">
-    <div class="info" id="clock">◷ --:--</div>
-    <div class="info">🟡 66°F</div>
-    <div class="info">⌁ 130 ms</div>
-    <input class="search" id="search" placeholder="⌕  search">
-    <button class="color-button" onclick="changeTheme()">🌈</button>
-  </div>
+  <a class="brand" href="index.html">🥝 kiwi</a>
+  <div class="info" id="clock">◷ --:--</div>
+  <div class="info">🟡 66°F</div>
+  <div class="info">⌁ 130 ms</div>
+  <input class="search" id="search" placeholder="⌕ search">
+  <div class="info">🌈</div>
 </header>
 
 <section class="hero">
-  <div class="wave one"></div>
-  <div class="wave two"></div>
-  <div class="wave three"></div>
-
-  <div class="logo-big">🥝</div>
+  <div class="logo">🥝</div>
   <h1>kiwi</h1>
 
   <div class="bookmark">
-    <kbd>ctrl</kbd> &nbsp; + &nbsp; <kbd>D</kbd>
-    &nbsp; to bookmark
+    <kbd>ctrl</kbd> + <kbd>D</kbd> &nbsp; to bookmark
   </div>
 
-  <a class="tiktok"
-     href="https://www.tiktok.com/"
-     target="_blank">
-    <span style="font-size:27px">♪</span>
-    &nbsp; find more kiwi links on tiktok
+  <a class="tiktok" href="https://www.tiktok.com/" target="_blank">
+    ♪ &nbsp; find more kiwi links on tiktok
   </a>
 
   <div class="promo">
-    <strong>KIWI GAMES</strong>
-    <span>PLAY SOMETHING FUN</span>
+    KIWI GAMES
   </div>
 </section>
 
 <section class="games-section">
-  <div class="game-toolbar">
-    <label for="sort">sort</label>
+
+  <div class="toolbar">
+    sort &nbsp;
     <select id="sort">
       <option value="default">most relevant</option>
       <option value="az">A to Z</option>
     </select>
   </div>
 
+  <!-- YOUR GAMES ARE ALREADY ADDED HERE -->
+
   <div class="games" id="games">
 
-    <a class="game-card" href="bowling.html"
-       data-name="Kiwi Bowling">
+    <a class="game-card" href="bowling.html" data-name="Kiwi Bowling">
       <button class="star" onclick="favorite(event,this)">☆</button>
       <div class="game-art">🎳</div>
       <h3>Kiwi Bowling</h3>
       <p>Knock down all ten pins!</p>
     </a>
 
-    <div class="game-card coming" data-name="Coming Soon">
+    <a class="game-card" href="feud.html" data-name="Kiwi Feud">
+      <button class="star" onclick="favorite(event,this)">☆</button>
+      <div class="game-art">🔎</div>
+      <h3>Kiwi Feud</h3>
+      <p>Guess the top search completions!</p>
+    </a>
+
+    <div class="game-card" data-name="Coming Soon">
       <div class="game-art">🎮</div>
       <h3>Coming Soon</h3>
-      <p>More Kiwi games are on the way.</p>
-    </div>
-
-    <div class="game-card coming" data-name="Coming Soon">
-      <div class="game-art">🕹️</div>
-      <h3>Coming Soon</h3>
-      <p>New games coming soon.</p>
+      <p>More Kiwi games are on the way!</p>
     </div>
 
   </div>
 </section>
 
-<footer>
-  Kiwi Games · Have fun playing!
-</footer>
+<footer>Kiwi Games · Have fun playing!</footer>
 
 <script>
 function updateClock(){
   document.getElementById("clock").textContent =
-    "◷ " + new Date().toLocaleTimeString([],{
+    "◷ "+new Date().toLocaleTimeString([],{
       hour:"2-digit",minute:"2-digit"
     });
 }
@@ -372,16 +241,13 @@ setInterval(updateClock,1000);
 function favorite(event,button){
   event.preventDefault();
   event.stopPropagation();
-  button.textContent =
-    button.textContent==="☆" ? "★" : "☆";
+  button.textContent=button.textContent==="☆"?"★":"☆";
 }
 
 document.getElementById("search").addEventListener("input",function(){
   const query=this.value.toLowerCase();
   document.querySelectorAll(".game-card").forEach(card=>{
-    card.style.display =
-      card.dataset.name.toLowerCase().includes(query)
-      ? "" : "none";
+    card.style.display=card.dataset.name.toLowerCase().includes(query)?"":"none";
   });
 });
 
@@ -390,30 +256,16 @@ document.getElementById("sort").addEventListener("change",function(){
   const cards=[...games.children];
 
   if(this.value==="az"){
-    cards.sort((a,b)=>
-      a.dataset.name.localeCompare(b.dataset.name)
-    );
+    cards.sort((a,b)=>a.dataset.name.localeCompare(b.dataset.name));
   }else{
     cards.sort((a,b)=>
-      a.dataset.name==="Kiwi Bowling" ? -1 :
-      b.dataset.name==="Kiwi Bowling" ? 1 : 0
+      a.dataset.name==="Kiwi Bowling"?-1:
+      b.dataset.name==="Kiwi Bowling"?1:0
     );
   }
 
   cards.forEach(card=>games.appendChild(card));
 });
-
-let alternate=false;
-function changeTheme(){
-  alternate=!alternate;
-  document.body.style.setProperty(
-    "--unused",""
-  );
-  document.querySelector(".hero").style.background =
-    alternate
-      ? "radial-gradient(ellipse,#123b20aa,transparent 75%)"
-      : "transparent";
-}
 </script>
 
 </body>
