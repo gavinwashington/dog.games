@@ -4,555 +4,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kiwi Bowling</title>
-
+<title>Bowling</title>
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background: #101510;
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
+*{box-sizing:border-box}
+body{margin:0;background:#101510;color:white;font-family:Arial,sans-serif;text-align:center}
+header{padding:18px;background:#17231a}
+h1{margin:0;color:#8cff65}
+header a{color:#8cff65;text-decoration:none}
+#game{max-width:650px;margin:15px auto;padding:12px}
+button,select{
+ padding:12px 18px;border:0;border-radius:10px;background:#8cff65;
+ color:#102010;font-weight:bold;cursor:pointer;margin:5px;font-size:16px
 }
-
-header {
-  padding: 18px;
-  background: #17231a;
+canvas{
+ width:100%;max-width:500px;background:#c58a50;
+ border:5px solid #70401e;border-radius:14px;display:block;margin:12px auto
 }
-
-h1 {
-  margin: 0;
-  color: #8cff65;
-}
-
-#game {
-  max-width: 650px;
-  margin: 15px auto;
-  padding: 12px;
-}
-
-button, select {
-  padding: 12px 18px;
-  border: 0;
-  border-radius: 10px;
-  background: #8cff65;
-  color: #102010;
-  font-weight: bold;
-  cursor: pointer;
-  margin: 5px;
-  font-size: 16px;
-}
-
-button:active {
-  transform: scale(.95);
-}
-
-canvas {
-  width: 100%;
-  max-width: 500px;
-  background: #c58a50;
-  border: 5px solid #70401e;
-  border-radius: 14px;
-  display: block;
-  margin: 12px auto;
-}
-
-#status {
-  font-size: 19px;
-  font-weight: bold;
-  margin: 12px;
-}
-
-#score {
-  font-size: 17px;
-  color: #baff9e;
-}
-
-.small {
-  color: #ccc;
-  font-size: 13px;
-}
-
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.controls button {
-  width: 90px;
-  font-size: 25px;
-}
+#status{font-size:19px;font-weight:bold;margin:12px}
+#score{font-size:17px;color:#baff9e}
+.small{color:#ccc;font-size:13px}
+.controls{display:flex;justify-content:center;gap:15px}
+.controls button{width:90px;font-size:25px}
 </style>
 </head>
-
 <body>
-
 <header>
-  <h1>🥝 KIWI BOWLING</h1>
-  <p class="small">The pins are NOT safe.</p>
+ <a href="index.html">← What The Dog Doin?</a>
+ <h1>🎳 BOWLING</h1>
+ <p class="small">Let's knock some pins down!</p>
 </header>
 
 <div id="game">
+ <select id="mode" onchange="newGame()">
+  <option value="1">Single Player</option>
+  <option value="2">Two Players</option>
+ </select>
+ <button onclick="newGame()">New Game</button>
 
-  <div>
-    <select id="mode" onchange="newGame()">
-      <option value="1">Single Player</option>
-      <option value="2">Two Players</option>
-    </select>
+ <div id="status">Player 1 — Frame 1</div>
+ <div id="score">Player 1: 0 | Player 2: 0</div>
 
-    <button onclick="newGame()">New Game</button>
-  </div>
+ <canvas id="lane" width="500" height="650"></canvas>
 
-  <div id="status">Player 1 — Frame 1</div>
-  <div id="score">Player 1: 0 | Player 2: 0</div>
-
-  <canvas id="lane" width="500" height="650"></canvas>
-
-  <div class="controls">
-    <button onclick="moveBall(-1)">⬅</button>
-    <button onclick="moveBall(1)">➡</button>
-  </div>
-
-  <button onclick="bowl()">🎳 BOWL!</button>
-
-  <p class="small">
-    Move the ball with the arrow keys or buttons.<br>
-    Press SPACE to bowl.
-  </p>
-
+ <div class="controls">
+  <button onclick="moveBall(-1)">⬅</button>
+  <button onclick="moveBall(1)">➡</button>
+ </div>
+ <button onclick="bowl()">🎳 BOWL!</button>
+ <p class="small">Move with arrow keys or buttons. Press SPACE to bowl.</p>
 </div>
 
 <script>
-const canvas = document.getElementById("lane");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("lane");
+const ctx=canvas.getContext("2d");
 
-let pins = [];
-let ball;
-let rolling = false;
-let player = 1;
-let frame = 1;
-let roll = 0;
-let scores = [0, 0];
-let turnPins = 0;
-let turnFinished = false;
+let pins=[],ball,rolling=false;
+let player=1,frame=1,roll=0;
+let scores=[0,0],turnPins=0,turnFinished=false;
 
-// Standard triangular pin arrangement.
-// Head pin is at the front, facing the bowler.
-
-const pinStart = [
-  // Back row
-  [196, 115],
-  [232, 115],
-  [268, 115],
-  [304, 115],
-
-  // Third row
-  [214, 145],
-  [250, 145],
-  [286, 145],
-
-  // Second row
-  [232, 175],
-  [268, 175],
-
-  // Head pin
-  [250, 205]
+// Head pin is at the front, closest to the bowler.
+const pinStart=[
+ [196,115],[232,115],[268,115],[304,115],
+ [214,145],[250,145],[286,145],
+ [232,175],[268,175],
+ [250,205]
 ];
 
-function makePins() {
-  pins = pinStart.map(([x, y], i) => ({
-    x,
-    y,
-    vx: 0,
-    vy: 0,
-    angle: 0,
-    spin: 0,
-    fallen: false,
-    id: i
-  }));
+function makePins(){
+ pins=pinStart.map(([x,y],i)=>({
+  x,y,vx:0,vy:0,angle:0,spin:0,fallen:false,id:i
+ }));
 }
 
-// Reset the ball to the middle.
-function resetBall() {
-  ball = {
-    x: 250,
-    y: 570,
-    vx: 0,
-    vy: 0
-  };
+function resetBall(){
+ ball={x:250,y:570,vx:0,vy:0};
 }
 
-// Move the actual ball.
-function moveBall(direction) {
-  if (rolling || turnFinished || !ball) return;
+function moveBall(direction){
+ if(rolling||turnFinished||!ball)return;
+ ball.x=Math.max(35,Math.min(465,ball.x+direction*12));
+}
 
-  ball.x = Math.max(
-    35,
-    Math.min(465, ball.x + direction * 12)
+function newGame(){
+ player=1;frame=1;roll=0;
+ scores=[0,0];turnPins=0;
+ rolling=false;turnFinished=false;
+ makePins();resetBall();updateText();
+}
+
+function updateText(){
+ document.getElementById("status").textContent=
+ "Player "+player+" — Frame "+frame+" — Roll "+(roll+1);
+ document.getElementById("score").textContent=
+ "Player 1: "+scores[0]+" | Player 2: "+scores[1];
+}
+
+function bowl(){
+ if(rolling||turnFinished)return;
+ rolling=true;
+ ball.vx=0;
+ ball.vy=-14;
+}
+
+function hitPin(pin,fx,fy){
+ pin.vx+=fx;pin.vy+=fy;
+ pin.spin+=(Math.random()-.5)*.3+fx*.035;
+ pin.fallen=true;
+}
+
+function collideBallPin(){
+ for(const p of pins){
+  if(p.fallen)continue;
+  const dx=p.x-ball.x,dy=p.y-ball.y;
+  const dist=Math.hypot(dx,dy);
+  if(dist<25){
+   const nx=dx/(dist||1),ny=dy/(dist||1);
+   const power=Math.max(4,Math.hypot(ball.vx,ball.vy)*.8);
+   hitPin(p,nx*power+(Math.random()-.5)*4,
+            ny*power+(Math.random()-.5)*4);
+   ball.vx-=nx*1.2;
+   ball.vy-=ny*1.2;
+  }
+ }
+}
+
+function collidePins(){
+ for(let i=0;i<pins.length;i++){
+  for(let j=i+1;j<pins.length;j++){
+   const a=pins[i],b=pins[j];
+   const dx=b.x-a.x,dy=b.y-a.y;
+   const dist=Math.hypot(dx,dy);
+   if(dist<25){
+    const nx=dx/(dist||1),ny=dy/(dist||1);
+    const overlap=25-dist;
+    a.x-=nx*overlap*.5;a.y-=ny*overlap*.5;
+    b.x+=nx*overlap*.5;b.y+=ny*overlap*.5;
+
+    const impact=(Math.abs(a.vx-b.vx)+Math.abs(a.vy-b.vy))*.35+2;
+    if(!a.fallen&&b.fallen)hitPin(a,-nx*impact,-ny*impact);
+    if(!b.fallen&&a.fallen)hitPin(b,nx*impact,ny*impact);
+    if(a.fallen&&b.fallen){
+     a.vx-=nx*.5;b.vx+=nx*.5;
+     a.vy-=ny*.5;b.vy+=ny*.5;
+    }
+   }
+  }
+ }
+}
+
+function finishRoll(){
+ const knocked=pins.filter(p=>p.fallen).length;
+
+ // A strike awards 30 points.
+ if(roll===0&&knocked===10){
+  scores[player-1]+=30;
+  nextTurn();
+  return;
+ }
+
+ // Otherwise award points for newly knocked pins.
+ const gained=Math.max(0,knocked-turnPins);
+ scores[player-1]+=gained;
+ turnPins=knocked;
+
+ if(roll===0){
+  roll=1;
+  resetBall();
+  updateText();
+ }else{
+  nextTurn();
+ }
+}
+
+function nextTurn(){
+ roll=0;turnPins=0;
+ player++;
+
+ if(player>Number(document.getElementById("mode").value)){
+  player=1;frame++;
+ }
+
+ if(frame>10){
+  document.getElementById("status").textContent="🎉 GAME OVER!";
+  turnFinished=true;
+  return;
+ }
+
+ makePins();resetBall();updateText();
+}
+
+function update(){
+ if(rolling){
+  ball.x+=ball.vx;ball.y+=ball.vy;
+  ball.vx*=.995;ball.vy*=.997;
+  collideBallPin();
+
+  if(ball.y<35||ball.x<25||ball.x>475)ball.vy=0;
+
+  if(ball.y<20||Math.hypot(ball.vx,ball.vy)<.35){
+   rolling=false;finishRoll();
+  }
+ }
+
+ for(const p of pins){
+  if(p.fallen){
+   p.x+=p.vx;p.y+=p.vy;
+   p.vx*=.96;p.vy*=.96;p.spin*=.97;
+   p.angle+=p.spin;p.spin*=.94;
+   p.x=Math.max(35,Math.min(465,p.x));
+   p.y=Math.max(35,Math.min(590,p.y));
+  }
+ }
+ collidePins();
+}
+
+function drawPin(p){
+ ctx.save();
+ ctx.translate(p.x,p.y);
+ ctx.rotate(p.angle);
+
+ ctx.fillStyle="rgba(0,0,0,.22)";
+ ctx.beginPath();ctx.ellipse(3,7,12,7,0,0,Math.PI*2);ctx.fill();
+
+ ctx.fillStyle="#fff";
+ ctx.beginPath();ctx.ellipse(0,0,10,17,0,0,Math.PI*2);ctx.fill();
+
+ ctx.strokeStyle="#e53935";ctx.lineWidth=3;
+ ctx.beginPath();
+ ctx.moveTo(-7,-6);ctx.lineTo(7,-6);
+ ctx.moveTo(-8,-1);ctx.lineTo(8,-1);
+ ctx.stroke();
+ ctx.restore();
+}
+
+function draw(){
+ ctx.clearRect(0,0,500,650);
+ ctx.fillStyle="#c58a50";ctx.fillRect(0,0,500,650);
+
+ ctx.strokeStyle="rgba(90,45,15,.2)";
+ ctx.lineWidth=1;
+ for(let x=20;x<500;x+=20){
+  ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,650);ctx.stroke();
+ }
+
+ ctx.strokeStyle="#fff";ctx.lineWidth=3;
+ ctx.beginPath();ctx.moveTo(15,535);ctx.lineTo(485,535);ctx.stroke();
+
+ // Projected ball path
+ if(!rolling&&!turnFinished){
+  ctx.strokeStyle="#9cff70";ctx.lineWidth=2;
+  ctx.setLineDash([7,9]);
+  ctx.beginPath();ctx.moveTo(ball.x,550);ctx.lineTo(ball.x,230);ctx.stroke();
+  ctx.setLineDash([]);
+ }
+
+ pins.forEach(drawPin);
+
+ if(ball){
+  const gradient=ctx.createRadialGradient(
+   ball.x-6,ball.y-7,2,ball.x,ball.y,17
   );
+  gradient.addColorStop(0,"#b8f6ff");
+  gradient.addColorStop(1,"#1769aa");
+  ctx.fillStyle=gradient;
+  ctx.beginPath();ctx.arc(ball.x,ball.y,16,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle="#06385e";ctx.lineWidth=2;ctx.stroke();
+ }
+ requestAnimationFrame(draw);
 }
 
-function newGame() {
-  player = 1;
-  frame = 1;
-  roll = 0;
-  scores = [0, 0];
-  turnPins = 0;
-  rolling = false;
-  turnFinished = false;
-
-  makePins();
-  resetBall();
-  updateText();
-}
-
-function updateText() {
-  document.getElementById("status").textContent =
-    "Player " + player +
-    " — Frame " + frame +
-    " — Roll " + (roll + 1);
-
-  document.getElementById("score").textContent =
-    "Player 1: " + scores[0] +
-    " | Player 2: " + scores[1];
-}
-
-// Launch from the ball's current position.
-function bowl() {
-  if (rolling || turnFinished) return;
-
-  rolling = true;
-  ball.vx = 0;
-  ball.vy = -14;
-}
-
-// Make a pin fly when hit.
-function hitPin(pin, forceX, forceY) {
-  pin.vx += forceX;
-  pin.vy += forceY;
-  pin.spin += (Math.random() - 0.5) * 0.3 +
-              forceX * 0.035;
-  pin.fallen = true;
-}
-
-// Ball collision with pins.
-function collideBallPin() {
-  for (const p of pins) {
-    if (p.fallen) continue;
-
-    const dx = p.x - ball.x;
-    const dy = p.y - ball.y;
-    const dist = Math.hypot(dx, dy);
-
-    if (dist < 23) {
-      const nx = dx / (dist || 1);
-      const ny = dy / (dist || 1);
-
-      const power = Math.max(
-        4,
-        Math.hypot(ball.vx, ball.vy) * 0.8
-      );
-
-      hitPin(
-        p,
-        nx * power + (Math.random() - 0.5) * 4,
-        ny * power + (Math.random() - 0.5) * 4
-      );
-
-      ball.vx -= nx * 1.2;
-      ball.vy -= ny * 1.2;
-    }
-  }
-}
-
-// Pins collide with other pins.
-function collidePins() {
-  for (let i = 0; i < pins.length; i++) {
-    for (let j = i + 1; j < pins.length; j++) {
-      const a = pins[i];
-      const b = pins[j];
-
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const dist = Math.hypot(dx, dy);
-
-      if (dist < 25) {
-        const nx = dx / (dist || 1);
-        const ny = dy / (dist || 1);
-        const overlap = 25 - dist;
-
-        a.x -= nx * overlap * 0.5;
-        a.y -= ny * overlap * 0.5;
-
-        b.x += nx * overlap * 0.5;
-        b.y += ny * overlap * 0.5;
-
-        const impact =
-          (Math.abs(a.vx - b.vx) +
-           Math.abs(a.vy - b.vy)) * 0.35 + 2;
-
-        if (!a.fallen && b.fallen) {
-          hitPin(a, -nx * impact, -ny * impact);
-        }
-
-        if (!b.fallen && a.fallen) {
-          hitPin(b, nx * impact, ny * impact);
-        }
-
-        if (a.fallen && b.fallen) {
-          a.vx -= nx * 0.5;
-          b.vx += nx * 0.5;
-          a.vy -= ny * 0.5;
-          b.vy += ny * 0.5;
-        }
-      }
-    }
-  }
-}
-
-function finishRoll() {
-  const knocked = pins.filter(p => p.fallen).length;
-  const gained = Math.max(0, knocked - turnPins);
-
-  scores[player - 1] += gained;
-  turnPins = knocked;
-
-  if (roll === 0 && knocked === 10) {
-    nextTurn();
-  } else if (roll === 0) {
-    roll = 1;
-    resetBall();
-    updateText();
-  } else {
-    nextTurn();
-  }
-}
-
-function nextTurn() {
-  roll = 0;
-  turnPins = 0;
-
-  player++;
-
-  if (player > Number(document.getElementById("mode").value)) {
-    player = 1;
-    frame++;
-  }
-
-  if (frame > 10) {
-    document.getElementById("status").textContent =
-      "🎉 GAME OVER!";
-
-    turnFinished = true;
-    return;
-  }
-
-  makePins();
-  resetBall();
-  updateText();
-}
-
-function update() {
-  if (rolling) {
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-
-    ball.vx *= 0.995;
-    ball.vy *= 0.997;
-
-    collideBallPin();
-
-    if (ball.y < 35 || ball.x < 25 || ball.x > 475) {
-      ball.vy = 0;
-    }
-
-    if (
-      ball.y < 20 ||
-      Math.hypot(ball.vx, ball.vy) < 0.35
-    ) {
-      rolling = false;
-      
-function finishRoll() {
-  const knocked = pins.filter(p => p.fallen).length;
-
-  // A strike is worth 30 points!
-  if (roll === 0 && knocked === 10) {
-    scores[player - 1] += 30;
-    nextTurn();
-    return;
-  }
-
-  // Normal pin scoring
-  const gained = Math.max(0, knocked - turnPins);
-  scores[player - 1] += gained;
-  turnPins = knocked;
-
-  if (roll === 0) {
-    roll = 1;
-    resetBall();
-    updateText();
-  } else {
-    nextTurn();
-  }
-}
-
-    }
-  }
-
-  // Update fallen pins.
-  for (const p of pins) {
-    if (p.fallen) {
-      p.x += p.vx;
-      p.y += p.vy;
-
-      p.vx *= 0.96;
-      p.vy *= 0.96;
-      p.spin *= 0.97;
-
-      p.angle += p.spin;
-      p.spin *= 0.94;
-
-      p.x = Math.max(35, Math.min(465, p.x));
-      p.y = Math.max(35, Math.min(590, p.y));
-    }
-  }
-
-  collidePins();
-}
-
-function drawPin(p) {
-  ctx.save();
-  ctx.translate(p.x, p.y);
-  ctx.rotate(p.angle);
-
-  // Shadow
-  ctx.fillStyle = "rgba(0,0,0,.22)";
-  ctx.beginPath();
-  ctx.ellipse(3, 7, 12, 7, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Pin body
-  ctx.fillStyle = "#fff";
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 10, 17, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Red stripes
-  ctx.strokeStyle = "#e53935";
-  ctx.lineWidth = 3;
-
-  ctx.beginPath();
-  ctx.moveTo(-7, -6);
-  ctx.lineTo(7, -6);
-  ctx.moveTo(-8, -1);
-  ctx.lineTo(8, -1);
-  ctx.stroke();
-
-  ctx.restore();
-}
-
-function draw() {
-  ctx.clearRect(0, 0, 500, 650);
-
-  // Wooden lane
-  ctx.fillStyle = "#c58a50";
-  ctx.fillRect(0, 0, 500, 650);
-
-  // Lane boards
-  ctx.strokeStyle = "rgba(90,45,15,.2)";
-  ctx.lineWidth = 1;
-
-  for (let x = 20; x < 500; x += 20) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, 650);
-    ctx.stroke();
-  }
-
-  // Foul line
-  ctx.strokeStyle = "#fff";
-  ctx.lineWidth = 3;
-
-  ctx.beginPath();
-  ctx.moveTo(15, 535);
-  ctx.lineTo(485, 535);
-  ctx.stroke();
-
-  // Dashed path showing where the ball will travel.
-  if (!rolling && !turnFinished) {
-    ctx.strokeStyle = "#9cff70";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([7, 9]);
-
-    ctx.beginPath();
-    ctx.moveTo(ball.x, 550);
-    ctx.lineTo(ball.x, 230);
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-  }
-
-  // Pins
-  pins.forEach(drawPin);
-
-  // Bowling ball
-  if (ball) {
-    const gradient = ctx.createRadialGradient(
-      ball.x - 6,
-      ball.y - 7,
-      2,
-      ball.x,
-      ball.y,
-      17
-    );
-
-    gradient.addColorStop(0, "#b8f6ff");
-    gradient.addColorStop(1, "#1769aa");
-
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, 16, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "#06385e";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
-
-  requestAnimationFrame(draw);
-}
-
-// Keyboard controls
-document.addEventListener("keydown", e => {
-  if (e.code === "ArrowLeft") {
-    e.preventDefault();
-    moveBall(-1);
-  }
-
-  if (e.code === "ArrowRight") {
-    e.preventDefault();
-    moveBall(1);
-  }
-
-  if (e.code === "Space") {
-    e.preventDefault();
-    bowl();
-  }
+document.addEventListener("keydown",e=>{
+ if(e.code==="ArrowLeft"||e.code==="ArrowRight"){
+  e.preventDefault();
+  moveBall(e.code==="ArrowLeft"?-1:1);
+ }
+ if(e.code==="Space"){
+  e.preventDefault();bowl();
+ }
 });
 
 newGame();
 draw();
-
-function loop() {
-  update();
-  requestAnimationFrame(loop);
-}
-
-loop();
+(function loop(){
+ update();
+ requestAnimationFrame(loop);
+})();
 </script>
-
 </body>
 </html>
