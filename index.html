@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kiwi</title>
+<title>What The Dog Doin?</title>
 
 <style>
 *{box-sizing:border-box}
@@ -30,10 +29,18 @@ header{
   z-index:5;
 }
 .brand{
-  color:#59ff35;
-  font-size:28px;
+  color:#7cff55;
+  font-size:25px;
   font-weight:bold;
   text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brand img{
+  width:48px;
+  height:48px;
+  object-fit:contain;
 }
 .search{
   padding:15px;
@@ -52,22 +59,23 @@ header{
 }
 .hero{
   text-align:center;
-  padding:55px 15px 45px;
-  min-height:560px;
+  padding:40px 15px 45px;
+  min-height:570px;
   background:radial-gradient(ellipse at center,#12620b55,transparent 70%);
 }
-.logo{
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  background:radial-gradient(circle,#d8ffad 0 30%,#27ff00 32% 67%,#063b00 70%);
-  display:grid;
-  place-items:center;
-  font-size:75px;
+.hero-logo{
+  width:220px;
+  height:220px;
+  object-fit:contain;
+  display:block;
   margin:auto;
-  box-shadow:0 0 55px #2cff0080;
+  filter:drop-shadow(0 0 25px #4cff3d80);
 }
-h1{font-size:55px;margin:20px}
+h1{
+  font-size:clamp(35px,6vw,58px);
+  margin:15px 0 25px;
+  text-shadow:0 0 20px #4cff3d66;
+}
 .bookmark,.tiktok{
   display:table;
   margin:15px auto;
@@ -84,13 +92,13 @@ h1{font-size:55px;margin:20px}
   height:100px;
   margin:35px auto 0;
   border-radius:15px;
-  background:linear-gradient(110deg,#15101f,#31132b,#101c0d);
+  background:linear-gradient(110deg,#15101f,#183c17,#101c0d);
   display:flex;
   align-items:center;
   justify-content:space-around;
   border:1px solid #31572b;
   color:#70ff46;
-  font-size:clamp(22px,5vw,48px);
+  font-size:clamp(22px,5vw,42px);
   font-weight:bold;
 }
 .games-section{
@@ -164,7 +172,11 @@ footer{
 <body>
 
 <header>
-  <a class="brand" href="index.html">🥝 kiwi</a>
+  <a class="brand" href="index.html">
+    <img src="dog.png" alt="What the Dog Doin logo">
+    What The Dog Doin?
+  </a>
+
   <div class="info" id="clock">◷ --:--</div>
   <div class="info">🟡 66°F</div>
   <div class="info">⌁ 130 ms</div>
@@ -173,20 +185,26 @@ footer{
 </header>
 
 <section class="hero">
-  <div class="logo">🥝</div>
-  <h1>kiwi</h1>
+
+  <img class="hero-logo" src="dog.png"
+       alt="What the Dog Doin dog logo">
+
+  <h1>What The Dog Doin?</h1>
 
   <div class="bookmark">
     <kbd>ctrl</kbd> + <kbd>D</kbd> &nbsp; to bookmark
   </div>
 
-  <a class="tiktok" href="https://www.tiktok.com/" target="_blank">
-    ♪ &nbsp; find more kiwi links on tiktok
+  <a class="tiktok"
+     href="https://www.tiktok.com/"
+     target="_blank">
+    ♪ &nbsp; find us on TikTok
   </a>
 
   <div class="promo">
-    KIWI GAMES
+    🐶 WHAT THE DOG DOIN?
   </div>
+
 </section>
 
 <section class="games-section">
@@ -199,18 +217,18 @@ footer{
     </select>
   </div>
 
-  <!-- YOUR GAMES ARE ALREADY ADDED HERE -->
-
   <div class="games" id="games">
 
-    <a class="game-card" href="bowling.html" data-name="Kiwi Bowling">
+    <a class="game-card" href="bowling.html"
+       data-name="Kiwi Bowling">
       <button class="star" onclick="favorite(event,this)">☆</button>
       <div class="game-art">🎳</div>
       <h3>Kiwi Bowling</h3>
       <p>Knock down all ten pins!</p>
     </a>
 
-    <a class="game-card" href="feud.html" data-name="Kiwi Feud">
+    <a class="game-card" href="feud.html"
+       data-name="Kiwi Feud">
       <button class="star" onclick="favorite(event,this)">☆</button>
       <div class="game-art">🔎</div>
       <h3>Kiwi Feud</h3>
@@ -220,13 +238,15 @@ footer{
     <div class="game-card" data-name="Coming Soon">
       <div class="game-art">🎮</div>
       <h3>Coming Soon</h3>
-      <p>More Kiwi games are on the way!</p>
+      <p>More games are on the way!</p>
     </div>
 
   </div>
 </section>
 
-<footer>Kiwi Games · Have fun playing!</footer>
+<footer>
+  What The Dog Doin? · Have fun playing! 🐶
+</footer>
 
 <script>
 function updateClock(){
@@ -247,7 +267,8 @@ function favorite(event,button){
 document.getElementById("search").addEventListener("input",function(){
   const query=this.value.toLowerCase();
   document.querySelectorAll(".game-card").forEach(card=>{
-    card.style.display=card.dataset.name.toLowerCase().includes(query)?"":"none";
+    card.style.display=
+      card.dataset.name.toLowerCase().includes(query)?"":"none";
   });
 });
 
