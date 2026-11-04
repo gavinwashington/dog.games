@@ -25,9 +25,11 @@ canvas{
 .small{color:#ccc;font-size:13px}
 .controls{display:flex;justify-content:center;gap:15px}
 .controls button{width:90px;font-size:25px}
+#warning{color:#ffb66b;font-size:13px}
 </style>
 </head>
 <body>
+
 <header>
  <a href="index.html">← What The Dog Doin?</a>
  <h1>🎳 BOWLING</h1>
@@ -35,10 +37,12 @@ canvas{
 </header>
 
 <div id="game">
+
  <select id="mode" onchange="newGame()">
   <option value="1">Single Player</option>
   <option value="2">Two Players</option>
  </select>
+
  <button onclick="newGame()">New Game</button>
 
  <div id="status">Player 1 — Frame 1</div>
@@ -50,8 +54,12 @@ canvas{
   <button onclick="moveBall(-1)">⬅</button>
   <button onclick="moveBall(1)">➡</button>
  </div>
+
  <button onclick="bowl()">🎳 BOWL!</button>
+
  <p class="small">Move with arrow keys or buttons. Press SPACE to bowl.</p>
+ <p id="warning">⚠️ Small center launch zone blocked. Aim for the pocket!</p>
+
 </div>
 
 <script>
@@ -62,52 +70,87 @@ let pins=[],ball,rolling=false;
 let player=1,frame=1,roll=0;
 let scores=[0,0],turnPins=0,turnFinished=false;
 
-// Head pin is at the front, closest to the bowler.
-const pinStart=[
- [196,115],[232,115],[268,115],[304,115],
- [214,145],[250,145],[286,145],
- [232,175],[268,175],
- [250,205]
-];
+// Smaller center launch restriction.
+const LEFT_LIMIT=35;
+const LEFT_EDGE=235;
+const RIGHT_EDGE=265;
+const RIGHT_LIMIT=465;
+
+function clampBallPosition(x){
+ if(x>LEFT_EDGE&&x<RIGHT_EDGE){
+  return x<250?LEFT_EDGE:RIGHT_EDGE;
+ }
+ return Math.max(LEFT_LIMIT,Math.min(RIGHT_LIMIT,x));
+}
 
 function makePins(){
+ const pinStart=[
+  [196,115],[232,115],[268,115],[304,115],
+  [214,145],[250,145],[286,145],
+  [232,175],[268,175],
+  [250,205]
+ ];
+
  pins=pinStart.map(([x,y],i)=>({
   x,y,vx:0,vy:0,angle:0,spin:0,fallen:false,id:i
  }));
 }
 
 function resetBall(){
- ball={x:250,y:570,vx:0,vy:0};
+ ball={x:190,y:570,vx:0,vy:0};
 }
 
 function moveBall(direction){
  if(rolling||turnFinished||!ball)return;
- ball.x=Math.max(35,Math.min(465,ball.x+direction*12));
+
+ const next=ball.x+direction*12;
+
+ if(ball.x<=LEFT_EDGE&&next>LEFT_EDGE){
+  ball.x=RIGHT_EDGE;
+  return;
+ }
+
+ if(ball.x>=RIGHT_EDGE&&next<RIGHT_EDGE){
+  ball.x=LEFT_EDGE;
+  return;
+ }
+
+ ball.x=clampBallPosition(next);
 }
 
 function newGame(){
- player=1;frame=1;roll=0;
- scores=[0,0];turnPins=0;
- rolling=false;turnFinished=false;
- makePins();resetBall();updateText();
+ player=1;
+ frame=1;
+ roll=0;
+ scores=[0,0];
+ turnPins=0;
+ rolling=false;
+ turnFinished=false;
+
+ makePins();
+ resetBall();
+ updateText();
 }
 
 function updateText(){
  document.getElementById("status").textContent=
  "Player "+player+" — Frame "+frame+" — Roll "+(roll+1);
+
  document.getElementById("score").textContent=
  "Player 1: "+scores[0]+" | Player 2: "+scores[1];
 }
 
 function bowl(){
  if(rolling||turnFinished)return;
+
  rolling=true;
  ball.vx=0;
  ball.vy=-14;
 }
 
 function hitPin(pin,fx,fy){
- pin.vx+=fx;pin.vy+=fy;
+ pin.vx+=fx;
+ pin.vy+=fy;
  pin.spin+=(Math.random()-.5)*.3+fx*.035;
  pin.fallen=true;
 }
@@ -115,13 +158,22 @@ function hitPin(pin,fx,fy){
 function collideBallPin(){
  for(const p of pins){
   if(p.fallen)continue;
-  const dx=p.x-ball.x,dy=p.y-ball.y;
+
+  const dx=p.x-ball.x;
+  const dy=p.y-ball.y;
   const dist=Math.hypot(dx,dy);
+
   if(dist<25){
-   const nx=dx/(dist||1),ny=dy/(dist||1);
+   const nx=dx/(dist||1);
+   const ny=dy/(dist||1);
    const power=Math.max(4,Math.hypot(ball.vx,ball.vy)*.8);
-   hitPin(p,nx*power+(Math.random()-.5)*4,
-            ny*power+(Math.random()-.5)*4);
+
+   hitPin(
+    p,
+    nx*power+(Math.random()-.5)*4,
+    ny*power+(Math.random()-.5)*4
+   );
+
    ball.vx-=nx*1.2;
    ball.vy-=ny*1.2;
   }
@@ -132,20 +184,35 @@ function collidePins(){
  for(let i=0;i<pins.length;i++){
   for(let j=i+1;j<pins.length;j++){
    const a=pins[i],b=pins[j];
-   const dx=b.x-a.x,dy=b.y-a.y;
-   const dist=Math.hypot(dx,dy);
-   if(dist<25){
-    const nx=dx/(dist||1),ny=dy/(dist||1);
-    const overlap=25-dist;
-    a.x-=nx*overlap*.5;a.y-=ny*overlap*.5;
-    b.x+=nx*overlap*.5;b.y+=ny*overlap*.5;
 
-    const impact=(Math.abs(a.vx-b.vx)+Math.abs(a.vy-b.vy))*.35+2;
-    if(!a.fallen&&b.fallen)hitPin(a,-nx*impact,-ny*impact);
-    if(!b.fallen&&a.fallen)hitPin(b,nx*impact,ny*impact);
+   const dx=b.x-a.x;
+   const dy=b.y-a.y;
+   const dist=Math.hypot(dx,dy);
+
+   if(dist<25){
+    const nx=dx/(dist||1);
+    const ny=dy/(dist||1);
+    const overlap=25-dist;
+
+    a.x-=nx*overlap*.5;
+    a.y-=ny*overlap*.5;
+    b.x+=nx*overlap*.5;
+    b.y+=ny*overlap*.5;
+
+    const impact=
+     (Math.abs(a.vx-b.vx)+Math.abs(a.vy-b.vy))*.35+2;
+
+    if(!a.fallen&&b.fallen)
+     hitPin(a,-nx*impact,-ny*impact);
+
+    if(!b.fallen&&a.fallen)
+     hitPin(b,nx*impact,ny*impact);
+
     if(a.fallen&&b.fallen){
-     a.vx-=nx*.5;b.vx+=nx*.5;
-     a.vy-=ny*.5;b.vy+=ny*.5;
+     a.vx-=nx*.5;
+     b.vx+=nx*.5;
+     a.vy-=ny*.5;
+     b.vy+=ny*.5;
     }
    }
   }
@@ -155,14 +222,12 @@ function collidePins(){
 function finishRoll(){
  const knocked=pins.filter(p=>p.fallen).length;
 
- // A strike awards 30 points.
  if(roll===0&&knocked===10){
   scores[player-1]+=30;
   nextTurn();
   return;
  }
 
- // Otherwise award points for newly knocked pins.
  const gained=Math.max(0,knocked-turnPins);
  scores[player-1]+=gained;
  turnPins=knocked;
@@ -177,11 +242,13 @@ function finishRoll(){
 }
 
 function nextTurn(){
- roll=0;turnPins=0;
+ roll=0;
+ turnPins=0;
  player++;
 
  if(player>Number(document.getElementById("mode").value)){
-  player=1;frame++;
+  player=1;
+  frame++;
  }
 
  if(frame>10){
@@ -190,31 +257,47 @@ function nextTurn(){
   return;
  }
 
- makePins();resetBall();updateText();
+ makePins();
+ resetBall();
+ updateText();
 }
 
 function update(){
  if(rolling){
-  ball.x+=ball.vx;ball.y+=ball.vy;
-  ball.vx*=.995;ball.vy*=.997;
+  ball.x+=ball.vx;
+  ball.y+=ball.vy;
+
+  ball.vx*=.995;
+  ball.vy*=.997;
+
   collideBallPin();
 
-  if(ball.y<35||ball.x<25||ball.x>475)ball.vy=0;
+  if(ball.y<35||ball.x<25||ball.x>475)
+   ball.vy=0;
 
   if(ball.y<20||Math.hypot(ball.vx,ball.vy)<.35){
-   rolling=false;finishRoll();
+   rolling=false;
+   finishRoll();
   }
  }
 
  for(const p of pins){
   if(p.fallen){
-   p.x+=p.vx;p.y+=p.vy;
-   p.vx*=.96;p.vy*=.96;p.spin*=.97;
-   p.angle+=p.spin;p.spin*=.94;
+   p.x+=p.vx;
+   p.y+=p.vy;
+
+   p.vx*=.96;
+   p.vy*=.96;
+   p.spin*=.97;
+
+   p.angle+=p.spin;
+   p.spin*=.94;
+
    p.x=Math.max(35,Math.min(465,p.x));
    p.y=Math.max(35,Math.min(590,p.y));
   }
  }
+
  collidePins();
 }
 
@@ -224,37 +307,82 @@ function drawPin(p){
  ctx.rotate(p.angle);
 
  ctx.fillStyle="rgba(0,0,0,.22)";
- ctx.beginPath();ctx.ellipse(3,7,12,7,0,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();
+ ctx.ellipse(3,7,12,7,0,0,Math.PI*2);
+ ctx.fill();
 
  ctx.fillStyle="#fff";
- ctx.beginPath();ctx.ellipse(0,0,10,17,0,0,Math.PI*2);ctx.fill();
-
- ctx.strokeStyle="#e53935";ctx.lineWidth=3;
  ctx.beginPath();
- ctx.moveTo(-7,-6);ctx.lineTo(7,-6);
- ctx.moveTo(-8,-1);ctx.lineTo(8,-1);
+ ctx.ellipse(0,0,10,17,0,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.strokeStyle="#e53935";
+ ctx.lineWidth=3;
+ ctx.beginPath();
+ ctx.moveTo(-7,-6);
+ ctx.lineTo(7,-6);
+ ctx.moveTo(-8,-1);
+ ctx.lineTo(8,-1);
  ctx.stroke();
+
  ctx.restore();
 }
 
 function draw(){
  ctx.clearRect(0,0,500,650);
- ctx.fillStyle="#c58a50";ctx.fillRect(0,0,500,650);
+
+ ctx.fillStyle="#c58a50";
+ ctx.fillRect(0,0,500,650);
 
  ctx.strokeStyle="rgba(90,45,15,.2)";
  ctx.lineWidth=1;
+
  for(let x=20;x<500;x+=20){
-  ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,650);ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x,0);
+  ctx.lineTo(x,650);
+  ctx.stroke();
  }
 
- ctx.strokeStyle="#fff";ctx.lineWidth=3;
- ctx.beginPath();ctx.moveTo(15,535);ctx.lineTo(485,535);ctx.stroke();
+ // Smaller blocked center zone.
+ ctx.fillStyle="rgba(180,35,35,.13)";
+ ctx.fillRect(LEFT_EDGE,0,RIGHT_EDGE-LEFT_EDGE,650);
 
- // Projected ball path
+ ctx.strokeStyle="rgba(120,0,0,.55)";
+ ctx.lineWidth=2;
+ ctx.setLineDash([8,8]);
+
+ ctx.beginPath();
+ ctx.moveTo(LEFT_EDGE,0);
+ ctx.lineTo(LEFT_EDGE,650);
+ ctx.moveTo(RIGHT_EDGE,0);
+ ctx.lineTo(RIGHT_EDGE,650);
+ ctx.stroke();
+
+ ctx.setLineDash([]);
+
+ ctx.fillStyle="rgba(90,0,0,.65)";
+ ctx.font="bold 10px Arial";
+ ctx.textAlign="center";
+ ctx.fillText("NO-GO",250,500);
+
+ ctx.strokeStyle="#fff";
+ ctx.lineWidth=3;
+ ctx.beginPath();
+ ctx.moveTo(15,535);
+ ctx.lineTo(485,535);
+ ctx.stroke();
+
  if(!rolling&&!turnFinished){
-  ctx.strokeStyle="#9cff70";ctx.lineWidth=2;
+  ctx.strokeStyle="#9cff70";
+  ctx.lineWidth=2;
   ctx.setLineDash([7,9]);
-  ctx.beginPath();ctx.moveTo(ball.x,550);ctx.lineTo(ball.x,230);ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(ball.x,550);
+  ctx.lineTo(ball.x,230);
+  ctx.stroke();
+
   ctx.setLineDash([]);
  }
 
@@ -264,12 +392,20 @@ function draw(){
   const gradient=ctx.createRadialGradient(
    ball.x-6,ball.y-7,2,ball.x,ball.y,17
   );
+
   gradient.addColorStop(0,"#b8f6ff");
   gradient.addColorStop(1,"#1769aa");
+
   ctx.fillStyle=gradient;
-  ctx.beginPath();ctx.arc(ball.x,ball.y,16,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="#06385e";ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(ball.x,ball.y,16,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.strokeStyle="#06385e";
+  ctx.lineWidth=2;
+  ctx.stroke();
  }
+
  requestAnimationFrame(draw);
 }
 
@@ -278,17 +414,21 @@ document.addEventListener("keydown",e=>{
   e.preventDefault();
   moveBall(e.code==="ArrowLeft"?-1:1);
  }
+
  if(e.code==="Space"){
-  e.preventDefault();bowl();
+  e.preventDefault();
+  bowl();
  }
 });
 
 newGame();
 draw();
+
 (function loop(){
  update();
  requestAnimationFrame(loop);
 })();
 </script>
+
 </body>
 </html>
