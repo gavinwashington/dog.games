@@ -1,293 +1,144 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>What The Dog Doin?</title>
-
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;
-  color:white;
-  font-family:Arial,sans-serif;
-  background:radial-gradient(ellipse at center,#07520b,#001000 65%,#000);
-  min-height:100vh;
+ margin:0;color:white;font-family:Arial,sans-serif;min-height:100vh;
+ background:radial-gradient(ellipse at center,#07520b,#001000 65%,#000);
 }
 header{
-  min-height:75px;
-  padding:12px 25px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  flex-wrap:wrap;
-  background:#000e;
-  border-bottom:1px solid #245321;
-  position:sticky;
-  top:0;
-  z-index:5;
+ min-height:75px;padding:12px 25px;display:flex;align-items:center;
+ justify-content:space-between;gap:15px;flex-wrap:wrap;
+ background:#000e;border-bottom:1px solid #245321;
+ position:sticky;top:0;z-index:5;
 }
 .brand{
-  color:#7cff55;
-  font-size:25px;
-  font-weight:bold;
-  text-decoration:none;
-  display:flex;
-  align-items:center;
-  gap:10px;
+ color:#7cff55;font-size:24px;font-weight:bold;text-decoration:none;
+ display:flex;align-items:center;gap:10px;
 }
-.brand img{
-  width:48px;
-  height:48px;
-  object-fit:contain;
-}
+.brand img{width:48px;height:48px;object-fit:contain}
 .search{
-  padding:15px;
-  width:min(400px,90vw);
-  border-radius:12px;
-  border:1px solid #245321;
-  background:#061307;
-  color:white;
-  font-size:16px;
+ padding:15px;width:min(400px,90vw);border-radius:12px;
+ border:1px solid #245321;background:#061307;color:white;font-size:16px;
 }
-.info{
-  padding:12px;
-  border:1px solid #245321;
-  border-radius:12px;
-  color:#d5f4d0;
-}
+.info{padding:12px;border:1px solid #245321;border-radius:12px;color:#d5f4d0}
 .hero{
-  text-align:center;
-  padding:40px 15px 45px;
-  min-height:570px;
-  background:radial-gradient(ellipse at center,#12620b55,transparent 70%);
+ text-align:center;padding:40px 15px 45px;min-height:570px;
+ background:radial-gradient(ellipse at center,#12620b55,transparent 70%);
 }
 .hero-logo{
-  width:220px;
-  height:220px;
-  object-fit:contain;
-  display:block;
-  margin:auto;
-  filter:drop-shadow(0 0 25px #4cff3d80);
+ width:220px;height:220px;object-fit:contain;display:block;
+ margin:auto;filter:drop-shadow(0 0 25px #4cff3d80);
 }
-h1{
-  font-size:clamp(35px,6vw,58px);
-  margin:15px 0 25px;
-  text-shadow:0 0 20px #4cff3d66;
-}
+h1{font-size:clamp(35px,6vw,58px);margin:15px 0 25px}
 .bookmark,.tiktok{
-  display:table;
-  margin:15px auto;
-  padding:17px 25px;
-  background:#031006ed;
-  border:1px solid #245321;
-  border-radius:13px;
-  color:#d5f4d0;
-  font-size:18px;
-  text-decoration:none;
+ display:table;margin:15px auto;padding:17px 25px;
+ background:#031006ed;border:1px solid #245321;border-radius:13px;
+ color:#d5f4d0;font-size:18px;text-decoration:none;
 }
 .promo{
-  max-width:760px;
-  height:100px;
-  margin:35px auto 0;
-  border-radius:15px;
-  background:linear-gradient(110deg,#15101f,#183c17,#101c0d);
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  border:1px solid #31572b;
-  color:#70ff46;
-  font-size:clamp(22px,5vw,42px);
-  font-weight:bold;
+ max-width:760px;height:100px;margin:35px auto 0;border-radius:15px;
+ background:linear-gradient(110deg,#15101f,#183c17,#101c0d);
+ display:flex;align-items:center;justify-content:center;
+ border:1px solid #31572b;color:#70ff46;
+ font-size:clamp(22px,5vw,42px);font-weight:bold;
 }
 .games-section{
-  background:#000b;
-  border-top:6px solid #286c1e;
-  padding:20px 4% 60px;
-}
-.toolbar{
-  display:flex;
-  justify-content:flex-end;
-  margin-bottom:20px;
-  color:#baff9e;
-}
-.toolbar select{
-  background:#061307;
-  color:white;
-  padding:10px;
-  border:1px solid #245321;
-  border-radius:9px;
+ background:#000b;border-top:6px solid #286c1e;padding:30px 4% 60px;
 }
 .games{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:22px;
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:22px;max-width:1000px;margin:auto;
 }
 .game-card{
-  position:relative;
-  text-decoration:none;
-  color:white;
-  background:#101810;
-  border:1px solid #285321;
-  border-radius:15px;
-  overflow:hidden;
-  transition:.2s;
+ display:block;text-decoration:none;color:white;background:#101810;
+ border:1px solid #285321;border-radius:15px;overflow:hidden;transition:.2s;
 }
 .game-card:hover{
-  transform:translateY(-5px);
-  border-color:#7bff4e;
-  box-shadow:0 0 25px #3cff3540;
+ transform:translateY(-5px);border-color:#7bff4e;
+ box-shadow:0 0 25px #3cff3540;
 }
 .game-art{
-  height:160px;
-  display:grid;
-  place-items:center;
-  font-size:80px;
-  background:linear-gradient(140deg,#174a13,#061206);
+ height:180px;display:grid;place-items:center;font-size:85px;
+ background:linear-gradient(140deg,#174a13,#061206);
 }
-.game-card h3{margin:14px}
-.game-card p{margin:0 14px 18px;color:#a9c9a3}
-.star{
-  position:absolute;
-  top:9px;
-  right:9px;
-  border:1px solid #43ff35;
-  background:#061307;
-  color:#65ff40;
-  border-radius:50%;
-  width:35px;
-  height:35px;
-  font-size:20px;
-  cursor:pointer;
-}
-footer{
-  text-align:center;
-  padding:25px;
-  color:#77936f;
+.game-card h3{margin:16px;font-size:22px}
+.game-card p{margin:0 16px 20px;color:#a9c9a3}
+footer{text-align:center;padding:25px;color:#77936f}
+@media(max-width:600px){
+ header{padding:12px}
+ .hero-logo{width:170px;height:170px}
+ .hero{min-height:500px}
 }
 </style>
 </head>
-
 <body>
 
 <header>
-  <a class="brand" href="index.html">
-    <img src="dog.png" alt="What the Dog Doin logo">
-    What The Dog Doin?
-  </a>
-
-  <div class="info" id="clock">◷ --:--</div>
-  <div class="info">🟡 66°F</div>
-  <div class="info">⌁ 130 ms</div>
-  <input class="search" id="search" placeholder="⌕ search">
-  <div class="info">🌈</div>
+ <a class="brand" href="index.html">
+  <img src="dog.png" alt="Dog logo">
+  What The Dog Doin?
+ </a>
+ <div class="info" id="clock">◷ --:--</div>
+ <input class="search" id="search" placeholder="⌕ Search games">
 </header>
 
 <section class="hero">
+ <img class="hero-logo" src="dog.png" alt="What The Dog Doin dog logo">
+ <h1>What The Dog Doin?</h1>
 
-  <img class="hero-logo" src="dog.png"
-       alt="What the Dog Doin dog logo">
+ <div class="bookmark">
+  <kbd>Ctrl</kbd> + <kbd>D</kbd> &nbsp; to bookmark
+ </div>
 
-  <h1>What The Dog Doin?</h1>
+ <a class="tiktok" href="https://www.tiktok.com/" target="_blank">
+  ♪ &nbsp; Find us on TikTok
+ </a>
 
-  <div class="bookmark">
-    <kbd>ctrl</kbd> + <kbd>D</kbd> &nbsp; to bookmark
-  </div>
-
-  <a class="tiktok"
-     href="https://www.tiktok.com/"
-     target="_blank">
-    ♪ &nbsp; find us on TikTok
-  </a>
-
-  <div class="promo">
-    🐶 WHAT THE DOG DOIN?
-  </div>
-
+ <div class="promo">🐶 WHAT THE DOG DOIN?</div>
 </section>
 
 <section class="games-section">
+ <div class="games" id="games">
 
-  <div class="toolbar">
-    sort &nbsp;
-    <select id="sort">
-      <option value="default">most relevant</option>
-      <option value="az">A to Z</option>
-    </select>
-  </div>
+  <a class="game-card" href="bowling.html" data-name="Bowling">
+   <div class="game-art">🎳</div>
+   <h3>Bowling</h3>
+   <p>Knock down all ten pins!</p>
+  </a>
 
-  <div class="games" id="games">
+  <a class="game-card" href="feud.html" data-name="Dog Doin Feud">
+   <div class="game-art">🐶</div>
+   <h3>Dog Doin Feud</h3>
+   <p>Guess the top 10 answers!</p>
+  </a>
 
-    <a class="game-card" href="bowling.html"
-       data-name="Kiwi Bowling">
-      <button class="star" onclick="favorite(event,this)">☆</button>
-      <div class="game-art">🎳</div>
-      <h3>Kiwi Bowling</h3>
-      <p>Knock down all ten pins!</p>
-    </a>
-
-    <a class="game-card" href="feud.html"
-       data-name="Kiwi Feud">
-      <button class="star" onclick="favorite(event,this)">☆</button>
-      <div class="game-art">🔎</div>
-      <h3>Kiwi Feud</h3>
-      <p>Guess the top search completions!</p>
-    </a>
-
-    <div class="game-card" data-name="Coming Soon">
-      <div class="game-art">🎮</div>
-      <h3>Coming Soon</h3>
-      <p>More games are on the way!</p>
-    </div>
-
-  </div>
+ </div>
 </section>
 
-<footer>
-  What The Dog Doin? · Have fun playing! 🐶
-</footer>
+<footer>What The Dog Doin? · Have fun playing! 🐶</footer>
 
 <script>
 function updateClock(){
-  document.getElementById("clock").textContent =
-    "◷ "+new Date().toLocaleTimeString([],{
-      hour:"2-digit",minute:"2-digit"
-    });
+ document.getElementById("clock").textContent =
+ "◷ "+new Date().toLocaleTimeString([],{
+  hour:"2-digit",minute:"2-digit"
+ });
 }
 updateClock();
 setInterval(updateClock,1000);
 
-function favorite(event,button){
-  event.preventDefault();
-  event.stopPropagation();
-  button.textContent=button.textContent==="☆"?"★":"☆";
-}
-
 document.getElementById("search").addEventListener("input",function(){
-  const query=this.value.toLowerCase();
-  document.querySelectorAll(".game-card").forEach(card=>{
-    card.style.display=
-      card.dataset.name.toLowerCase().includes(query)?"":"none";
-  });
-});
-
-document.getElementById("sort").addEventListener("change",function(){
-  const games=document.getElementById("games");
-  const cards=[...games.children];
-
-  if(this.value==="az"){
-    cards.sort((a,b)=>a.dataset.name.localeCompare(b.dataset.name));
-  }else{
-    cards.sort((a,b)=>
-      a.dataset.name==="Kiwi Bowling"?-1:
-      b.dataset.name==="Kiwi Bowling"?1:0
-    );
-  }
-
-  cards.forEach(card=>games.appendChild(card));
+ const query=this.value.toLowerCase();
+ document.querySelectorAll(".game-card").forEach(card=>{
+  card.style.display=card.dataset.name.toLowerCase().includes(query)?"":"none";
+ });
 });
 </script>
-
 </body>
 </html>
