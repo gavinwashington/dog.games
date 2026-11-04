@@ -5,49 +5,109 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wordle - What The Dog Doin?</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;background:radial-gradient(ellipse at center,#07520b,#001000 70%,#000);
- color:white;font-family:Arial,sans-serif;text-align:center;min-height:100vh
+ margin:0;
+ background:radial-gradient(ellipse at center,#07520b,#001000 70%,#000);
+ color:white;
+ font-family:Arial,sans-serif;
+ text-align:center;
+ min-height:100vh;
 }
-header{padding:17px;background:#000e;border-bottom:1px solid #286b20}
+
+header{
+ padding:17px;
+ background:#000e;
+ border-bottom:1px solid #286b20;
+}
+
 header a{color:#8cff65;text-decoration:none}
+
 h1{color:#8cff65;margin:12px}
+
 main{max-width:520px;margin:15px auto;padding:12px}
+
 .info{color:#baff9e;font-size:14px}
+
 #board{
- display:grid;grid-template-columns:repeat(5,1fr);
- gap:7px;width:min(330px,90vw);margin:22px auto
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:7px;
+ width:min(330px,90vw);
+ margin:22px auto;
 }
+
 .tile{
- aspect-ratio:1;display:grid;place-items:center;
- border:2px solid #41613e;border-radius:5px;
- font-size:30px;font-weight:bold;text-transform:uppercase;
- background:#101810
+ aspect-ratio:1;
+ display:grid;
+ place-items:center;
+ border:2px solid #41613e;
+ border-radius:5px;
+ font-size:30px;
+ font-weight:bold;
+ text-transform:uppercase;
+ background:#101810;
 }
+
+.tile.filled{border-color:#8cff65}
+
 .tile.correct{background:#398b35;border-color:#398b35}
 .tile.present{background:#c29b28;border-color:#c29b28}
 .tile.absent{background:#343a34;border-color:#343a34}
+
 #keyboard{max-width:500px;margin:20px auto}
-.keyrow{display:flex;justify-content:center;gap:5px;margin:6px 0}
-.key{
- flex:1;max-width:43px;height:53px;border:0;border-radius:6px;
- background:#668064;color:white;font-weight:bold;font-size:15px;
- cursor:pointer;padding:3px
+
+.keyrow{
+ display:flex;
+ justify-content:center;
+ gap:5px;
+ margin:6px 0;
 }
+
+.key{
+ flex:1;
+ max-width:43px;
+ height:53px;
+ border:0;
+ border-radius:6px;
+ background:#668064;
+ color:white;
+ font-weight:bold;
+ font-size:15px;
+ cursor:pointer;
+ padding:3px;
+}
+
 .key.wide{max-width:75px;font-size:12px}
+
 .key.correct{background:#398b35}
 .key.present{background:#c29b28}
 .key.absent{background:#343a34}
+
 button.action{
- background:#8cff65;color:#102010;border:0;border-radius:10px;
- padding:13px 22px;font-weight:bold;cursor:pointer;margin:7px
+ background:#8cff65;
+ color:#102010;
+ border:0;
+ border-radius:10px;
+ padding:13px 22px;
+ font-weight:bold;
+ cursor:pointer;
+ margin:7px;
 }
-#message{min-height:26px;color:#baff9e;font-weight:bold}
+
+#message{
+ min-height:26px;
+ color:#baff9e;
+ font-weight:bold;
+}
+
 footer{padding:20px;color:#a9c9a3;font-size:13px}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -57,18 +117,23 @@ footer{padding:20px;color:#a9c9a3;font-size:13px}
 </header>
 
 <main>
- <p class="info">You have 6 attempts. Green = right spot. Yellow = wrong spot.</p>
+
+ <p class="info">
+ You have 6 attempts. Green = right spot. Yellow = wrong spot.
+ </p>
 
  <div id="board"></div>
  <div id="message">Good luck! 🐶</div>
  <div id="keyboard"></div>
 
  <button class="action" onclick="newGame()">NEW GAME</button>
+
 </main>
 
 <footer>What The Dog Doin? · Wordle</footer>
 
 <script>
+
 const words=[
  "apple","beach","black","brave","bread","brick","bring",
  "chair","chase","check","chess","child","clean","clock",
@@ -104,32 +169,46 @@ const keyRows=[
 ];
 
 function newGame(){
+
  answer=words[Math.floor(Math.random()*words.length)];
+
  currentRow=0;
  currentGuess="";
  gameOver=false;
+
  boardStates=[];
  keyboardStates={};
+
  message.textContent="Good luck! 🐶";
+
  renderBoard();
  renderKeyboard();
 }
 
 function renderBoard(){
+
  board.innerHTML="";
 
  for(let row=0;row<6;row++){
+
   for(let col=0;col<5;col++){
+
    const tile=document.createElement("div");
    tile.className="tile";
 
    const saved=boardStates[row]?.[col];
 
    if(saved){
+
     tile.textContent=saved.letter;
-    if(saved.state)tile.classList.add(saved.state);
+    tile.classList.add(saved.state);
+
    }else if(row===currentRow){
-    tile.textContent=currentGuess[col]||"";
+
+    const letter=currentGuess[col]||"";
+    tile.textContent=letter;
+
+    if(letter)tile.classList.add("filled");
    }
 
    board.appendChild(tile);
@@ -138,14 +217,19 @@ function renderBoard(){
 }
 
 function renderKeyboard(){
+
  keyboard.innerHTML="";
 
  keyRows.forEach(row=>{
+
   const rowEl=document.createElement("div");
   rowEl.className="keyrow";
 
   row.forEach(letter=>{
+
    const key=document.createElement("button");
+
+   key.type="button";
    key.className="key";
 
    if(letter==="ENTER"||letter==="⌫"){
@@ -155,12 +239,21 @@ function renderKeyboard(){
    key.textContent=letter;
 
    const state=keyboardStates[letter];
+
    if(state)key.classList.add(state);
 
    key.onclick=()=>{
-    if(letter==="ENTER")submitGuess();
-    else if(letter==="⌫")deleteLetter();
-    else addLetter(letter);
+
+    if(letter==="ENTER"){
+     submitGuess();
+    }
+    else if(letter==="⌫"){
+     deleteLetter();
+    }
+    else{
+     addLetter(letter);
+    }
+
    };
 
    rowEl.appendChild(key);
@@ -171,18 +264,30 @@ function renderKeyboard(){
 }
 
 function addLetter(letter){
- if(gameOver||currentGuess.length>=5)return;
+
+ if(gameOver)return;
+ if(currentGuess.length>=5)return;
+
  currentGuess+=letter.toLowerCase();
+
+ message.textContent="";
+
  renderBoard();
 }
 
 function deleteLetter(){
+
  if(gameOver)return;
+
  currentGuess=currentGuess.slice(0,-1);
+
+ message.textContent="";
+
  renderBoard();
 }
 
 function submitGuess(){
+
  if(gameOver)return;
 
  if(currentGuess.length!==5){
@@ -190,7 +295,9 @@ function submitGuess(){
   return;
  }
 
- if(!words.includes(currentGuess)){
+ const guess=currentGuess.toLowerCase();
+
+ if(!words.includes(guess)){
   message.textContent="That word isn't in the game's word list!";
   return;
  }
@@ -198,76 +305,129 @@ function submitGuess(){
  const result=[];
  const remaining=answer.split("");
 
- // First pass: exact matches.
+ // Check exact matches first.
+
  for(let i=0;i<5;i++){
-  if(currentGuess[i]===answer[i]){
+
+  if(guess[i]===answer[i]){
+
    result[i]="correct";
    remaining[i]=null;
   }
  }
 
- // Second pass: letters in the wrong position.
+ // Check misplaced letters.
+
  for(let i=0;i<5;i++){
+
   if(result[i])continue;
 
-  const found=remaining.indexOf(currentGuess[i]);
+  const found=remaining.indexOf(guess[i]);
 
   if(found!==-1){
+
    result[i]="present";
    remaining[found]=null;
+
   }else{
+
    result[i]="absent";
   }
  }
 
+ // Save the completed row.
+
  boardStates[currentRow]=[];
 
  for(let i=0;i<5;i++){
+
   boardStates[currentRow][i]={
-   letter:currentGuess[i],
+   letter:guess[i].toUpperCase(),
    state:result[i]
   };
 
-  const letter=currentGuess[i].toUpperCase();
-  const old=keyboardStates[letter];
+  const letter=guess[i].toUpperCase();
 
-  if(result[i]==="correct"||(!old&&result[i]==="present")||!old){
+  const priority={
+   absent:1,
+   present:2,
+   correct:3
+  };
+
+  if(
+   !keyboardStates[letter]||
+   priority[result[i]]>priority[keyboardStates[letter]]
+  ){
+
    keyboardStates[letter]=result[i];
   }
  }
 
- const won=currentGuess===answer;
-
- currentRow++;
- currentGuess="";
+ // Update the board BEFORE moving on.
 
  renderBoard();
  renderKeyboard();
 
+ const won=guess===answer;
+
+ currentGuess="";
+
  if(won){
+
   gameOver=true;
-  message.textContent="🎉 YOU GOT IT! The word was "+answer.toUpperCase()+"!";
- }else if(currentRow>=6){
-  gameOver=true;
-  message.textContent="Game over! The word was "+answer.toUpperCase()+".";
- }else{
-  message.textContent="Guess "+(currentRow+1)+" of 6. Keep going!";
+
+  message.textContent=
+   "🎉 YOU GOT IT! The word was "+answer.toUpperCase()+"!";
+
+  return;
  }
+
+ currentRow++;
+
+ if(currentRow>=6){
+
+  gameOver=true;
+
+  message.textContent=
+   "Game over! The word was "+answer.toUpperCase()+".";
+
+  return;
+ }
+
+ message.textContent=
+  "Guess "+(currentRow+1)+" of 6. Keep going!";
+
+ renderBoard();
 }
 
+// Physical keyboard support.
+
 document.addEventListener("keydown",event=>{
+
  if(event.ctrlKey||event.metaKey||event.altKey)return;
 
  if(event.key==="Enter"){
+
+  event.preventDefault();
   submitGuess();
+
  }else if(event.key==="Backspace"){
+
+  event.preventDefault();
   deleteLetter();
+
  }else if(/^[a-zA-Z]$/.test(event.key)){
-  addLetter(event.key.toUpperCase());
+
+  addLetter(event.key);
  }
+
 });
 
+// Start game.
+
 newGame();
+
 </script>
+
 </body>
 </html>
