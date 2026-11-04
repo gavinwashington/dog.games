@@ -1,109 +1,311 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>What The Dog Doin?</title>
+
 <style>
 *{box-sizing:border-box}
+
+:root{
+ --bg:#001000;
+ --glow:#07520b;
+ --accent:#70ff46;
+ --panel:#101810;
+ --border:#285321;
+ --text:#ffffff;
+ --muted:#a9c9a3;
+}
+
 body{
- margin:0;color:white;font-family:Arial,sans-serif;min-height:100vh;
- background:radial-gradient(ellipse at center,#07520b,#001000 65%,#000);
+ margin:0;
+ color:var(--text);
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+ background:radial-gradient(ellipse at center,var(--glow),var(--bg) 75%);
+ transition:background .3s,color .3s;
 }
+
 header{
- min-height:75px;padding:12px 25px;display:flex;align-items:center;
- justify-content:space-between;gap:15px;flex-wrap:wrap;
- background:#000e;border-bottom:1px solid #245321;
- position:sticky;top:0;z-index:5;
+ min-height:75px;
+ padding:12px 25px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:15px;
+ flex-wrap:wrap;
+ background:rgba(0,0,0,.8);
+ border-bottom:1px solid var(--border);
+ position:sticky;
+ top:0;
+ z-index:5;
 }
+
 .brand{
- color:#7cff55;font-size:24px;font-weight:bold;text-decoration:none;
- display:flex;align-items:center;gap:10px;
+ color:var(--accent);
+ font-size:24px;
+ font-weight:bold;
+ text-decoration:none;
+ display:flex;
+ align-items:center;
+ gap:10px;
 }
-.brand img{width:48px;height:48px;object-fit:contain}
+
+.brand img{
+ width:48px;
+ height:48px;
+ object-fit:contain;
+}
+
 .search{
- padding:15px;width:min(400px,90vw);border-radius:12px;
- border:1px solid #245321;background:#061307;color:white;font-size:16px;
+ padding:15px;
+ width:min(400px,90vw);
+ border-radius:12px;
+ border:1px solid var(--border);
+ background:var(--panel);
+ color:var(--text);
+ font-size:16px;
 }
-.info{padding:12px;border:1px solid #245321;border-radius:12px;color:#d5f4d0}
+
+.info{
+ padding:12px;
+ border:1px solid var(--border);
+ border-radius:12px;
+ color:var(--text);
+ background:var(--panel);
+}
+
+.theme-wrap{
+ position:relative;
+}
+
+.theme-button{
+ padding:11px 14px;
+ border:1px solid var(--border);
+ border-radius:12px;
+ background:var(--panel);
+ color:var(--text);
+ font-size:23px;
+ cursor:pointer;
+}
+
+.theme-menu{
+ display:none;
+ position:absolute;
+ right:0;
+ top:55px;
+ width:190px;
+ padding:12px;
+ background:var(--panel);
+ border:1px solid var(--accent);
+ border-radius:14px;
+ box-shadow:0 10px 35px #0009;
+ z-index:20;
+}
+
+.theme-menu.open{
+ display:block;
+}
+
+.theme-menu h3{
+ margin:5px 0 12px;
+ color:var(--accent);
+}
+
+.theme-option{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ width:100%;
+ padding:11px;
+ margin:4px 0;
+ background:transparent;
+ color:var(--text);
+ border:1px solid transparent;
+ border-radius:9px;
+ text-align:left;
+ cursor:pointer;
+ font-size:15px;
+}
+
+.theme-option:hover{
+ background:var(--glow);
+ border-color:var(--accent);
+}
+
+.color-dot{
+ width:19px;
+ height:19px;
+ border-radius:50%;
+ border:1px solid #888;
+}
+
 .hero{
- text-align:center;padding:40px 15px 45px;min-height:570px;
- background:radial-gradient(ellipse at center,#12620b55,transparent 70%);
+ text-align:center;
+ padding:40px 15px 45px;
+ min-height:500px;
+ background:radial-gradient(ellipse at center,var(--glow),transparent 70%);
+ transition:background .3s;
 }
+
 .hero-logo{
- width:220px;height:220px;object-fit:contain;display:block;
- margin:auto;filter:drop-shadow(0 0 25px #4cff3d80);
+ width:220px;
+ height:220px;
+ object-fit:contain;
+ display:block;
+ margin:auto;
+ filter:drop-shadow(0 0 25px var(--accent));
 }
-h1{font-size:clamp(35px,6vw,58px);margin:15px 0 25px}
-.bookmark,.tiktok{
- display:table;margin:15px auto;padding:17px 25px;
- background:#031006ed;border:1px solid #245321;border-radius:13px;
- color:#d5f4d0;font-size:18px;text-decoration:none;
+
+h1{
+ font-size:clamp(35px,6vw,58px);
+ margin:15px 0 25px;
 }
+
 .promo{
- max-width:760px;height:100px;margin:35px auto 0;border-radius:15px;
- background:linear-gradient(110deg,#15101f,#183c17,#101c0d);
- display:flex;align-items:center;justify-content:center;
- border:1px solid #31572b;color:#70ff46;
- font-size:clamp(22px,5vw,42px);font-weight:bold;
+ max-width:760px;
+ height:100px;
+ margin:35px auto 0;
+ border-radius:15px;
+ background:linear-gradient(110deg,var(--panel),var(--glow),var(--panel));
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border:1px solid var(--border);
+ color:var(--accent);
+ font-size:clamp(22px,5vw,42px);
+ font-weight:bold;
 }
+
 .games-section{
- background:#000b;border-top:6px solid #286c1e;padding:30px 4% 60px;
+ background:rgba(0,0,0,.4);
+ border-top:6px solid var(--accent);
+ padding:30px 4% 60px;
 }
+
 .games{
- display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
- gap:22px;max-width:1000px;margin:auto;
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:22px;
+ max-width:1000px;
+ margin:auto;
 }
+
 .game-card{
- display:block;text-decoration:none;color:white;background:#101810;
- border:1px solid #285321;border-radius:15px;overflow:hidden;transition:.2s;
+ display:block;
+ text-decoration:none;
+ color:var(--text);
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:15px;
+ overflow:hidden;
+ transition:.2s;
 }
+
 .game-card:hover{
- transform:translateY(-5px);border-color:#7bff4e;
- box-shadow:0 0 25px #3cff3540;
+ transform:translateY(-5px);
+ border-color:var(--accent);
+ box-shadow:0 0 25px var(--glow);
 }
+
 .game-art{
- height:180px;display:grid;place-items:center;font-size:85px;
- background:linear-gradient(140deg,#174a13,#061206);
+ height:180px;
+ display:grid;
+ place-items:center;
+ font-size:85px;
+ background:linear-gradient(140deg,var(--glow),var(--panel));
 }
-.game-card h3{margin:16px;font-size:22px}
-.game-card p{margin:0 16px 20px;color:#a9c9a3}
-footer{text-align:center;padding:25px;color:#77936f}
+
+.game-card h3{
+ margin:16px;
+ font-size:22px;
+}
+
+.game-card p{
+ margin:0 16px 20px;
+ color:var(--muted);
+}
+
+footer{
+ text-align:center;
+ padding:25px;
+ color:var(--muted);
+}
+
 @media(max-width:600px){
  header{padding:12px}
  .hero-logo{width:170px;height:170px}
- .hero{min-height:500px}
+ .hero{min-height:450px}
 }
 </style>
 </head>
+
 <body>
 
 <header>
+
  <a class="brand" href="index.html">
   <img src="dog.png" alt="Dog logo">
   What The Dog Doin?
  </a>
+
  <div class="info" id="clock">◷ --:--</div>
+
  <input class="search" id="search" placeholder="⌕ Search games">
+
+ <div class="theme-wrap">
+  <button class="theme-button" onclick="toggleThemes()">🌈</button>
+
+  <div class="theme-menu" id="themeMenu">
+   <h3>Choose a color</h3>
+
+   <button class="theme-option" onclick="setTheme('black')">
+    <span class="color-dot" style="background:black"></span>
+    Black
+   </button>
+
+   <button class="theme-option" onclick="setTheme('white')">
+    <span class="color-dot" style="background:white"></span>
+    White
+   </button>
+
+   <button class="theme-option" onclick="setTheme('red')">
+    <span class="color-dot" style="background:red"></span>
+    Red
+   </button>
+
+   <button class="theme-option" onclick="setTheme('blue')">
+    <span class="color-dot" style="background:blue"></span>
+    Blue
+   </button>
+
+   <button class="theme-option" onclick="setTheme('pink')">
+    <span class="color-dot" style="background:pink"></span>
+    Pink
+   </button>
+
+   <button class="theme-option" onclick="setTheme('purple')">
+    <span class="color-dot" style="background:purple"></span>
+    Purple
+   </button>
+  </div>
+ </div>
+
 </header>
 
 <section class="hero">
- <img class="hero-logo" src="dog.png" alt="What The Dog Doin dog logo">
+
+ <img class="hero-logo" src="dog.png" alt="Dog logo">
+
  <h1>What The Dog Doin?</h1>
 
- <div class="bookmark">
-  <kbd>Ctrl</kbd> + <kbd>D</kbd> &nbsp; to bookmark
- </div>
-
- <a class="tiktok" href="https://www.tiktok.com/" target="_blank">
-  ♪ &nbsp; Find us on TikTok
- </a>
-
  <div class="promo">🐶 WHAT THE DOG DOIN?</div>
+
 </section>
 
 <section class="games-section">
+
  <div class="games" id="games">
 
   <a class="game-card" href="bowling.html" data-name="Bowling">
@@ -119,9 +321,12 @@ footer{text-align:center;padding:25px;color:#77936f}
   </a>
 
  </div>
+
 </section>
 
-<footer>What The Dog Doin? · Have fun playing! 🐶</footer>
+<footer>
+ What The Dog Doin? · Have fun playing! 🐶
+</footer>
 
 <script>
 function updateClock(){
@@ -130,15 +335,75 @@ function updateClock(){
   hour:"2-digit",minute:"2-digit"
  });
 }
+
 updateClock();
 setInterval(updateClock,1000);
 
+function toggleThemes(){
+ document.getElementById("themeMenu").classList.toggle("open");
+}
+
+const themes={
+ black:{
+  bg:"#050505",glow:"#242424",accent:"#eeeeee",
+  panel:"#151515",border:"#555555",text:"#ffffff",muted:"#bbbbbb"
+ },
+ white:{
+  bg:"#e9e9e9",glow:"#ffffff",accent:"#222222",
+  panel:"#ffffff",border:"#aaaaaa",text:"#171717",muted:"#555555"
+ },
+ red:{
+  bg:"#250000",glow:"#650808",accent:"#ff5252",
+  panel:"#300b0b",border:"#a52b2b",text:"#ffffff",muted:"#ffbbbb"
+ },
+ blue:{
+  bg:"#001027",glow:"#073c78",accent:"#55aaff",
+  panel:"#092448",border:"#2567a9",text:"#ffffff",muted:"#b5d9ff"
+ },
+ pink:{
+  bg:"#260014",glow:"#720b43",accent:"#ff75bd",
+  panel:"#3c1028",border:"#b83c7b",text:"#ffffff",muted:"#ffc4e1"
+ },
+ purple:{
+  bg:"#16002a",glow:"#4d137a",accent:"#c58aff",
+  panel:"#29113e",border:"#793ab0",text:"#ffffff",muted:"#e0c4ff"
+ }
+};
+
+function setTheme(name){
+ const theme=themes[name];
+
+ Object.entries(theme).forEach(([key,value])=>{
+  document.documentElement.style.setProperty("--"+key,value);
+ });
+
+ localStorage.setItem("dogDoinTheme",name);
+
+ document.getElementById("themeMenu").classList.remove("open");
+}
+
+const savedTheme=localStorage.getItem("dogDoinTheme");
+if(savedTheme&&themes[savedTheme]){
+ setTheme(savedTheme);
+}
+
 document.getElementById("search").addEventListener("input",function(){
  const query=this.value.toLowerCase();
+
  document.querySelectorAll(".game-card").forEach(card=>{
-  card.style.display=card.dataset.name.toLowerCase().includes(query)?"":"none";
+  card.style.display=
+   card.dataset.name.toLowerCase().includes(query)?"":"none";
  });
 });
+
+document.addEventListener("click",function(event){
+ const wrap=document.querySelector(".theme-wrap");
+
+ if(!wrap.contains(event.target)){
+  document.getElementById("themeMenu").classList.remove("open");
+ }
+});
 </script>
+
 </body>
 </html>
