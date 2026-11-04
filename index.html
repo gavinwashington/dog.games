@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,9 +77,7 @@ header{
  background:var(--panel);
 }
 
-.theme-wrap{
- position:relative;
-}
+.theme-wrap{position:relative}
 
 .theme-button{
  padding:11px 14px;
@@ -104,9 +103,7 @@ header{
  z-index:20;
 }
 
-.theme-menu.open{
- display:block;
-}
+.theme-menu.open{display:block}
 
 .theme-menu h3{
  margin:5px 0 12px;
@@ -184,11 +181,18 @@ h1{
  padding:30px 4% 60px;
 }
 
+.section-title{
+ text-align:center;
+ color:var(--accent);
+ margin:0 0 25px;
+ font-size:30px;
+}
+
 .games{
  display:grid;
  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
  gap:22px;
- max-width:1000px;
+ max-width:1100px;
  margin:auto;
 }
 
@@ -261,33 +265,27 @@ footer{
    <h3>Choose a color</h3>
 
    <button class="theme-option" onclick="setTheme('black')">
-    <span class="color-dot" style="background:black"></span>
-    Black
+    <span class="color-dot" style="background:black"></span>Black
    </button>
 
    <button class="theme-option" onclick="setTheme('white')">
-    <span class="color-dot" style="background:white"></span>
-    White
+    <span class="color-dot" style="background:white"></span>White
    </button>
 
    <button class="theme-option" onclick="setTheme('red')">
-    <span class="color-dot" style="background:red"></span>
-    Red
+    <span class="color-dot" style="background:red"></span>Red
    </button>
 
    <button class="theme-option" onclick="setTheme('blue')">
-    <span class="color-dot" style="background:blue"></span>
-    Blue
+    <span class="color-dot" style="background:blue"></span>Blue
    </button>
 
    <button class="theme-option" onclick="setTheme('pink')">
-    <span class="color-dot" style="background:pink"></span>
-    Pink
+    <span class="color-dot" style="background:pink"></span>Pink
    </button>
 
    <button class="theme-option" onclick="setTheme('purple')">
-    <span class="color-dot" style="background:purple"></span>
-    Purple
+    <span class="color-dot" style="background:purple"></span>Purple
    </button>
   </div>
  </div>
@@ -306,6 +304,8 @@ footer{
 
 <section class="games-section">
 
+ <h2 class="section-title">🎮 GAME ARCADE</h2>
+
  <div class="games" id="games">
 
   <a class="game-card" href="bowling.html" data-name="Bowling">
@@ -318,6 +318,18 @@ footer{
    <div class="game-art">🐶</div>
    <h3>Dog Doin Feud</h3>
    <p>Guess the top 10 answers!</p>
+  </a>
+
+  <a class="game-card" href="wordle.html" data-name="Wordle">
+   <div class="game-art">🟩</div>
+   <h3>Wordle</h3>
+   <p>Can you guess the secret five-letter word?</p>
+  </a>
+
+  <a class="game-card" href="calculator.html" data-name="Math Calculator">
+   <div class="game-art">🧮</div>
+   <h3>Math Calculator</h3>
+   <p>Calculate numbers with your own calculator!</p>
   </a>
 
  </div>
@@ -372,13 +384,13 @@ const themes={
 
 function setTheme(name){
  const theme=themes[name];
+ if(!theme)return;
 
  Object.entries(theme).forEach(([key,value])=>{
   document.documentElement.style.setProperty("--"+key,value);
  });
 
  localStorage.setItem("dogDoinTheme",name);
-
  document.getElementById("themeMenu").classList.remove("open");
 }
 
