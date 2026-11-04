@@ -374,7 +374,31 @@ function update() {
       Math.hypot(ball.vx, ball.vy) < 0.35
     ) {
       rolling = false;
-      finishRoll();
+      
+function finishRoll() {
+  const knocked = pins.filter(p => p.fallen).length;
+
+  // A strike is worth 30 points!
+  if (roll === 0 && knocked === 10) {
+    scores[player - 1] += 30;
+    nextTurn();
+    return;
+  }
+
+  // Normal pin scoring
+  const gained = Math.max(0, knocked - turnPins);
+  scores[player - 1] += gained;
+  turnPins = knocked;
+
+  if (roll === 0) {
+    roll = 1;
+    resetBall();
+    updateText();
+  } else {
+    nextTurn();
+  }
+}
+
     }
   }
 
