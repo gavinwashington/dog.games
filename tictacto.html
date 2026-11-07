@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe - What The Dog Doin?</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;background:radial-gradient(ellipse at center,#07520b,#001000 75%);
+ color:white;font-family:Arial,sans-serif;text-align:center;
+}
+header{padding:18px;background:#000e;border-bottom:1px solid #286b20}
+header a{color:#8cff65;text-decoration:none}
+h1{color:#8cff65;margin:12px}
+main{max-width:500px;margin:20px auto;padding:15px}
+#turn{font-size:22px;color:#baff9e;font-weight:bold;margin:20px}
+.board{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:10px;width:min(360px,90vw);margin:20px auto;
+}
+.cell{
+ aspect-ratio:1;border:2px solid #41613e;border-radius:12px;
+ background:#101810;color:#8cff65;font-size:clamp(45px,12vw,80px);
+ font-weight:bold;cursor:pointer;
+}
+.cell:hover:not(:disabled){background:#18301a;border-color:#8cff65}
+.cell:disabled{cursor:default}
+.cell.win{background:#398b35;border-color:#8cff65}
+button.action{
+ padding:13px 22px;background:#8cff65;color:#102010;
+ border:0;border-radius:10px;font-weight:bold;cursor:pointer;margin:7px;
+}
+#score{color:#baff9e;font-size:18px;line-height:1.8}
+footer{padding:20px;color:#a9c9a3;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+ <a href="index.html">← What The Dog Doin?</a>
+ <h1>❌ TIC TAC TOE ⭕</h1>
+ <div>Get three in a row!</div>
+</header>
+
+<main>
+ <div id="turn">Player X's turn</div>
+ <div class="board" id="board"></div>
+ <div id="score">
+  ❌ Player X: <span id="xScore">0</span>
+  <br>
+  ⭕ Player O: <span id="oScore">0</span>
+  <br>
+  Draws: <span id="drawScore">0</span>
+ </div>
+ <button class="action" onclick="newRound()">NEW ROUND</button>
+ <button class="action" onclick="resetScores()">RESET SCORES</button>
+</main>
+
+<footer>What The Dog Doin? · Tic Tac Toe</footer>
+
+<script>
+const boardElement=document.getElementById("board");
+const turnElement=document.getElementById("turn");
+
+const wins=[
+ [0,1,2],[3,4,5],[6,7,8],
+ [0,3,6],[1,4,7],[2,5,8],
+ [0,4,8],[2,4,6]
+];
+
+let cells=Array(9).fill("");
+let current="X";
+let finished=false;
+let scores={X:0,O:0,draw:0};
+
+function render(){
+ boardElement.innerHTML="";
+
+ cells.forEach((value,index)=>{
+  const button=document.createElement("button");
+  button.className="cell";
+  button.textContent=value;
+  button.disabled=!!value||finished;
+  button.setAttribute("aria-label","Square "+(index+1)+(value?", "+value:""));
+  button.onclick=()=>play(index);
+  boardElement.appendChild(button);
+ });
+
+ document.getElementById("xScore").textContent=scores.X;
+ document.getElementById("oScore").textContent=scores.O;
+ document.getElementById("drawScore").textContent=scores.draw;
+}
+
+function checkWinner(){
+ for(const combo of wins){
+  if(combo.every(i=>cells[i]===current)){
+   return combo;
+  }
+ }
+ return null;
+}
+
+function play(index){
+ if(finished||cells[index])return;
+
+ cells[index]=current;
+
+ const winning=checkWinner();
+
+ if(winning){
+  finished=true;
+  scores[current]++;
+  turnElement.textContent="🎉 Player "+current+" wins!";
+  render();
+  winning.forEach(i=>boardElement.children[i].classList.add("win"));
+  return;
+ }
+
+ if(cells.every(Boolean)){
+  finished=true;
+  scores.draw++;
+  turnElement.textContent="🤝 It's a draw!";
+ }else{
+  current=current==="X"?"O":"X";
+  turnElement.textContent="Player "+current+"'s turn";
+ }
+
+ render();
+}
+
+function newRound(){
+ cells=Array(9).fill("");
+ current="X";
+ finished=false;
+ turnElement.textContent="Player X's turn";
+ render();
+}
+
+function resetScores(){
+ scores={X:0,O:0,draw:0};
+ newRound();
+}
+
+newRound();
+</script>
+</body>
+</html>
