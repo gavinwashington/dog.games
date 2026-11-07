@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snake - What The Dog Doin?</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;background:radial-gradient(ellipse at center,#07520b,#001000 75%);
+ color:white;font-family:Arial,sans-serif;text-align:center;
+}
+header{padding:18px;background:#000e;border-bottom:1px solid #286b20}
+header a{color:#8cff65;text-decoration:none}
+h1{color:#8cff65;margin:12px}
+main{max-width:520px;margin:15px auto;padding:12px}
+#score{font-size:22px;color:#baff9e;font-weight:bold;margin:15px}
+canvas{
+ width:min(440px,94vw);height:auto;aspect-ratio:1;
+ background:#071407;border:4px solid #398b35;
+ border-radius:12px;display:block;margin:15px auto;
+}
+#message{min-height:28px;color:#baff9e;font-weight:bold}
+button{
+ background:#8cff65;color:#102010;border:0;border-radius:10px;
+ padding:13px 18px;font-weight:bold;cursor:pointer;margin:5px;
+}
+.controls{
+ display:grid;grid-template-columns:repeat(3,65px);
+ justify-content:center;gap:5px;margin:15px auto;
+}
+.controls button{font-size:23px;padding:12px;margin:0}
+.controls .empty{visibility:hidden}
+footer{padding:20px;color:#a9c9a3;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+ <a href="index.html">← What The Dog Doin?</a>
+ <h1>🐍 SNAKE</h1>
+ <div>Eat apples and grow!</div>
+</header>
+
+<main>
+ <div id="score">Score: 0</div>
+ <canvas id="game" width="400" height="400"></canvas>
+ <div id="message">Press an arrow key or START GAME!</div>
+ <button onclick="startGame()">START / RESTART</button>
+
+ <div class="controls">
+  <button class="empty"> </button>
+  <button onclick="changeDirection(0,-1)">⬆</button>
+  <button class="empty"> </button>
+  <button onclick="changeDirection(-1,0)">⬅</button>
+  <button onclick="changeDirection(0,1)">⬇</button>
+  <button onclick="changeDirection(1,0)">➡</button>
+ </div>
+
+ <p>Controls: Arrow keys or WASD</p>
+</main>
+
+<footer>What The Dog Doin? · Snake</footer>
+
+<script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+const size=20;
+const tiles=20;
+
+let snake=[];
+let apple={x:10,y:10};
+let direction={x:1,y:0};
+let nextDirection={x:1,y:0};
+let score=0;
+let running=false;
+let timer=null;
+let speed=130;
+
+function randomApple(){
+ let position;
+ do{
+  position={
+   x:Math.floor(Math.random()*tiles),
+   y:Math.floor(Math.random()*tiles)
+  };
+ }while(snake.some(p=>p.x===position.x&&p.y===position.y));
+ return position;
+}
+
+function startGame(){
+ clearInterval(timer);
+
+ snake=[
+  {x:8,y:10},
+  {x:7,y:10},
+  {x:6,y:10}
+ ];
+
+ direction={x:1,y:0};
+ nextDirection={x:1,y:0};
+ score=0;
+ speed=130;
+ running=true;
+ apple=randomApple();
+
+ document.getElementById("score").textContent="Score: 0";
+ document.getElementById("message").textContent="Go get those apples! 🍎";
+
+ draw();
+ timer=setInterval(update,speed);
+}
+
+function changeDirection(x,y){
+ if(!running){
+  startGame();
+ }
+
+ if(x===-direction.x&&y===-direction.y)return;
+
+ nextDirection={x,y};
+}
+
+function update(){
+ if(!running)return;
+
+ direction={...nextDirection};
+
+ const head={
+  x:snake[0].x+direction.x,
+  y:snake[0].y+direction.y
+ };
+
+ const eating=head.x===apple.x&&head.y===apple.y;
+
+ const body=eating?snake:snake.slice(0,-1);
+
+ if(
+  head.x<0||head.x>=tiles||
+  head.y<0||head.y>=tiles||
+  body.some(p=>p.x===head.x&&p.y===head.y)
+ ){
+  endGame();
+  return;
+ }
+
+ snake.unshift(head);
+
+ if(eating){
+  score++;
+  document.getElementById("score").textContent="Score: "+score;
+  apple=randomApple();
+
+  if(speed>65){
+   speed-=3;
+   clearInterval(timer);
+   timer=setInterval(update,speed);
+  }
+ }else{
+  snake.pop();
+ }
+
+ draw();
+}
+
+function endGame(){
+ running=false;
+ clearInterval(timer);
+ document.getElementById("message").textContent=
+  "GAME OVER! Final score: "+score+" 🐍";
+ draw();
+}
+
+function draw(){
+ ctx.fillStyle="#071407";
+ ctx.fillRect(0,0,400,400);
+
+ // Grid
+ ctx.strokeStyle="#142c14";
+ ctx.lineWidth=1;
+
+ for(let i=0;i<=400;i+=size){
+  ctx.beginPath();
+  ctx.moveTo(i,0);
+  ctx.lineTo(i,400);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(0,i);
+  ctx.lineTo(400,i);
+  ctx.stroke();
+ }
+
+ // Apple
+ ctx.fillStyle="#ff3535";
+ ctx.beginPath();
+ ctx.arc(apple.x*size+10,apple.y*size+10,8,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.fillStyle="#8cff65";
+ ctx.fillRect(apple.x*size+10,apple.y*size+1,3,7);
+
+ // Snake
+ snake.forEach((part,index)=>{
+  ctx.fillStyle=index===0?"#baff9e":"#48bb35";
+  ctx.fillRect(part.x*size+1,part.y*size+1,size-2,size-2);
+
+  if(index===0){
+   ctx.fillStyle="#102010";
+
+   const eye1=direction.x!==0?part.y*size+6:part.y*size+6;
+   const eye2=direction.x!==0?part.y*size+14:part.y*size+6;
+
+   if(direction.x!==0){
+    ctx.fillRect(part.x*size+10,eye1,3,3);
+    ctx.fillRect(part.x*size+10,eye2,3,3);
+   }else{
+    ctx.fillRect(part.x*size+6,part.y*size+10,3,3);
+    ctx.fillRect(part.x*size+14,part.y*size+10,3,3);
+   }
+  }
+ });
+}
+
+document.addEventListener("keydown",event=>{
+ const keys={
+  ArrowUp:[0,-1],w:[0,-1],W:[0,-1],
+  ArrowDown:[0,1],s:[0,1],S:[0,1],
+  ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],
+  ArrowRight:[1,0],d:[1,0],D:[1,0]
+ };
+
+ const move=keys[event.key];
+
+ if(move){
+  event.preventDefault();
+  changeDirection(move[0],move[1]);
+ }
+});
+
+draw();
+</script>
+</body>
+</html>
