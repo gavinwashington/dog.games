@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whack-a-Mole | What The Dog Doin?</title>
+<style>
+*{box-sizing:border-box}
+:root{
+ --bg:#001000;--panel:#101810;--accent:#70ff46;
+ --border:#285321;--text:#fff;--muted:#a9c9a3;
+}
+body{
+ margin:0;min-height:100vh;padding:20px;
+ font-family:Arial,sans-serif;color:var(--text);
+ background:radial-gradient(ellipse at center,#07520b,#001000 75%);
+ text-align:center;
+}
+header{
+ max-width:850px;margin:0 auto 20px;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:12px;flex-wrap:wrap;
+}
+a{color:var(--accent);text-decoration:none;font-weight:bold}
+h1{font-size:clamp(32px,6vw,50px);color:var(--accent);margin:15px 0 5px}
+.subtitle{color:var(--muted);margin:0 0 25px}
+.game{
+ max-width:600px;margin:auto;padding:22px;
+ background:var(--panel);border:2px solid var(--border);
+ border-radius:20px;box-shadow:0 0 25px #0008;
+}
+.stats{
+ display:flex;justify-content:space-around;gap:10px;
+ flex-wrap:wrap;margin-bottom:20px;
+}
+.stat{
+ flex:1;min-width:100px;padding:13px;
+ background:#071007;border:1px solid var(--border);
+ border-radius:12px;
+}
+.stat strong{display:block;color:var(--accent);font-size:26px;margin-top:5px}
+.board{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:12px;max-width:440px;margin:0 auto;
+}
+.hole{
+ aspect-ratio:1;border:3px solid #35652b;
+ border-radius:50%;background:radial-gradient(#050805,#182817);
+ display:grid;place-items:center;font-size:clamp(38px,9vw,65px);
+ cursor:pointer;user-select:none;touch-action:manipulation;
+ transition:transform .1s,border-color .1s;
+}
+.hole:active{transform:scale(.94)}
+.hole.active{background:radial-gradient(#466d25,#14210e);border-color:var(--accent)}
+.hole span{pointer-events:none}
+.controls{margin-top:22px}
+button{
+ border:0;border-radius:12px;padding:13px 24px;
+ background:var(--accent);color:#061006;
+ font-size:17px;font-weight:bold;cursor:pointer;
+}
+button:hover{filter:brightness(1.1)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.message{min-height:28px;color:var(--muted);margin:16px 0 0}
+footer{margin:25px 0 5px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+ <a href="index.html">← Back to Arcade</a>
+ <span>🐶 What The Dog Doin?</span>
+</header>
+
+<h1>🔨 Whack-a-Mole!</h1>
+<p class="subtitle">Tap the moles before they disappear!</p>
+
+<main class="game">
+ <div class="stats">
+  <div class="stat">Score<strong id="score">0</strong></div>
+  <div class="stat">Time<strong id="time">30</strong></div>
+  <div class="stat">Best<strong id="best">0</strong></div>
+ </div>
+
+ <div class="board" id="board">
+  <button class="hole" aria-label="Hole 1" data-index="0"><span></span></button>
+  <button class="hole" aria-label="Hole 2" data-index="1"><span></span></button>
+  <button class="hole" aria-label="Hole 3" data-index="2"><span></span></button>
+  <button class="hole" aria-label="Hole 4" data-index="3"><span></span></button>
+  <button class="hole" aria-label="Hole 5" data-index="4"><span></span></button>
+  <button class="hole" aria-label="Hole 6" data-index="5"><span></span></button>
+  <button class="hole" aria-label="Hole 7" data-index="6"><span></span></button>
+  <button class="hole" aria-label="Hole 8" data-index="7"><span></span></button>
+  <button class="hole" aria-label="Hole 9" data-index="8"><span></span></button>
+ </div>
+
+ <div class="controls">
+  <button id="startButton" onclick="startGame()">▶ Start Game</button>
+  <p class="message" id="message">Press Start Game when you're ready!</p>
+ </div>
+</main>
+
+<footer>What The Dog Doin? · Whack-a-Mole 🐶</footer>
+
+<script>
+const holes=[...document.querySelectorAll(".hole")];
+const scoreDisplay=document.getElementById("score");
+const timeDisplay=document.getElementById("time");
+const bestDisplay=document.getElementById("best");
+const message=document.getElementById("message");
+const startButton=document.getElementById("startButton");
+
+let score=0;
+let timeLeft=30;
+let activeHole=-1;
+let playing=false;
+let timer=null;
+let moleTimer=null;
+let best=Number(localStorage.getItem("dogMoleBest")||0);
+
+bestDisplay.textContent=best;
+
+function clearMole(){
+ holes.forEach(hole=>{
+  hole.classList.remove("active");
+  hole.querySelector("span").textContent="";
+ });
+ activeHole=-1;
+}
+
+function showMole(){
+ if(!playing)return;
+ clearMole();
+
+ let next=Math.floor(Math.random()*holes.length);
+ activeHole=next;
+
+ holes[next].classList.add("active");
+ holes[next].querySelector("span").textContent="🐹";
+}
+
+function startGame(){
+ clearInterval(timer);
+ clearTimeout(moleTimer);
+
+ score=0;
+ timeLeft=30;
+ playing=true;
+
+ scoreDisplay.textContent=score;
+ timeDisplay.textContent=timeLeft;
+ message.textContent="GO! Catch those moles!";
+ startButton.disabled=true;
+ startButton.textContent="Playing...";
+
+ showMole();
+
+ moleTimer=setInterval(()=>{
+  showMole();
+ },850);
+
+ timer=setInterval(()=>{
+  timeLeft--;
+  timeDisplay.textContent=timeLeft;
+
+  if(timeLeft<=0)endGame();
+ },1000);
+}
+
+function whack(index){
+ if(!playing||index!==activeHole)return;
+
+ score++;
+ scoreDisplay.textContent=score;
+
+ clearMole();
+
+ // A quick score bonus is given for each successful hit.
+ message.textContent="Nice hit! +1 point";
+
+ // Show another mole shortly after the successful hit.
+ clearTimeout(moleTimer);
+ moleTimer=setTimeout(()=>{
+  showMole();
+  moleTimer=setInterval(showMole,850);
+ },180);
+}
+
+holes.forEach(hole=>{
+ hole.addEventListener("click",()=>{
+  whack(Number(hole.dataset.index));
+ });
+});
+
+function endGame(){
+ playing=false;
+ clearInterval(timer);
+ clearInterval(moleTimer);
+ clearTimeout(moleTimer);
+ clearMole();
+
+ if(score>best){
+  best=score;
+  localStorage.setItem("dogMoleBest",best);
+  bestDisplay.textContent=best;
+  message.textContent="TIME'S UP! New high score! 🏆";
+ }else{
+  message.textContent="TIME'S UP! You scored "+score+" points!";
+ }
+
+ startButton.disabled=false;
+ startButton.textContent="↻ Play Again";
+}
+</script>
+</body>
+</html>
