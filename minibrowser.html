@@ -4,457 +4,384 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Browser 2.0 | What The Dog Doin?</title>
+
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+<title>Mini Browser 2.0</title>
 
 <style>
-*{box-sizing:border-box}
-
-:root{
- --bg:#001000;
- --glow:#07520b;
- --accent:#70ff46;
- --panel:#101810;
- --border:#285321;
- --text:#fff;
- --muted:#a9c9a3;
+* {
+    box-sizing: border-box;
 }
 
-body{
- margin:0;
- min-height:100vh;
- font-family:Arial,sans-serif;
- color:var(--text);
- background:radial-gradient(ellipse at center,var(--glow),var(--bg) 80%);
+body {
+    margin: 0;
+    padding: 20px;
+    background: #080d08;
+    color: #8cff65;
+    font-family: Arial, sans-serif;
 }
 
-header{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:12px;
- flex-wrap:wrap;
- padding:15px 22px;
- background:#000000cc;
- border-bottom:1px solid var(--border);
+.browser {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: #101810;
+    border: 2px solid #8cff65;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 0 20px #8cff6533;
 }
 
-.brand{
- color:var(--accent);
- text-decoration:none;
- font-size:22px;
- font-weight:bold;
- display:flex;
- align-items:center;
- gap:10px;
+.header {
+    padding: 16px;
+    background: #142014;
+    border-bottom: 1px solid #355c35;
 }
 
-.brand img{
- width:42px;
- height:42px;
- object-fit:contain;
+h1 {
+    margin: 0 0 14px;
+    font-size: 23px;
 }
 
-.home-link{
- color:var(--text);
- text-decoration:none;
- background:var(--panel);
- border:1px solid var(--border);
- padding:11px 16px;
- border-radius:10px;
+.toolbar {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
 }
 
-main{
- width:min(1100px,95%);
- margin:30px auto;
+button {
+    background: #1d301d;
+    color: #8cff65;
+    border: 1px solid #8cff65;
+    border-radius: 7px;
+    padding: 10px 13px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
-h1{
- text-align:center;
- color:var(--accent);
- font-size:clamp(30px,5vw,44px);
+button:hover {
+    background: #8cff65;
+    color: black;
 }
 
-.subtitle{
- text-align:center;
- color:var(--muted);
- margin-bottom:25px;
+.address-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
 }
 
-.browser{
- background:var(--panel);
- border:1px solid var(--border);
- border-radius:16px;
- padding:15px;
- box-shadow:0 0 25px #0008;
+#address {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    background: #080d08;
+    color: white;
+    border: 1px solid #8cff65;
+    border-radius: 7px;
+    outline: none;
+    font-size: 15px;
 }
 
-.toolbar{
- display:flex;
- gap:7px;
- align-items:center;
- flex-wrap:wrap;
+#go {
+    min-width: 65px;
 }
 
-.nav-button{
- min-width:43px;
- height:43px;
- border:1px solid var(--border);
- border-radius:9px;
- background:#071007;
- color:var(--accent);
- font-size:19px;
- cursor:pointer;
+.status {
+    padding: 10px 14px;
+    background: #0b120b;
+    color: #b4dca8;
+    font-size: 13px;
+    border-bottom: 1px solid #355c35;
 }
 
-.nav-button:hover:not(:disabled){
- background:var(--glow);
- border-color:var(--accent);
+.viewer {
+    height: 600px;
+    background: white;
 }
 
-.nav-button:disabled{
- opacity:.35;
- cursor:not-allowed;
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background: white;
 }
 
-#address{
- flex:1;
- min-width:170px;
- height:43px;
- padding:10px 13px;
- background:#050b05;
- color:white;
- border:1px solid var(--border);
- border-radius:9px;
- font-size:15px;
- outline:none;
+.footer {
+    padding: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #7b9975;
+    background: #101810;
 }
 
-#address:focus{
- border-color:var(--accent);
-}
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+    }
 
-#go{
- height:43px;
- padding:0 22px;
- background:var(--accent);
- color:#001000;
- border:0;
- border-radius:9px;
- font-weight:bold;
- cursor:pointer;
-}
+    .browser {
+        margin: 10px auto;
+    }
 
-.status{
- min-height:27px;
- padding:12px 3px;
- color:var(--muted);
- font-size:14px;
-}
-
-.viewer{
- position:relative;
- width:100%;
- height:570px;
- overflow:hidden;
- border:2px solid var(--border);
- border-radius:12px;
- background:#080e08;
-}
-
-#website{
- width:100%;
- height:100%;
- border:0;
- display:none;
- background:white;
-}
-
-.placeholder{
- position:absolute;
- inset:0;
- display:flex;
- flex-direction:column;
- justify-content:center;
- align-items:center;
- text-align:center;
- padding:25px;
- background:linear-gradient(145deg,#101810,#061006);
-}
-
-.globe{
- font-size:70px;
-}
-
-.placeholder h2{
- color:var(--accent);
-}
-
-.placeholder p{
- max-width:480px;
- line-height:1.6;
- color:var(--muted);
-}
-
-.tips{
- margin-top:15px;
- padding:14px;
- border:1px solid var(--border);
- border-radius:10px;
- color:var(--muted);
- font-size:13px;
- line-height:1.7;
-}
-
-footer{
- text-align:center;
- padding:25px;
- color:var(--muted);
-}
-
-@media(max-width:600px){
- header{padding:12px}
- .browser{padding:10px}
- .viewer{height:480px}
- #go{flex:1}
+    .viewer {
+        height: 65vh;
+        min-height: 350px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<header>
- <a class="brand" href="index.html">
-  <img src="dog.png" alt="Dog logo">
-  What The Dog Doin?
- </a>
+<div class="browser">
 
- <a class="home-link" href="index.html">← Arcade Home</a>
-</header>
+    <div class="header">
 
-<main>
+        <h1>🌐 Mini Browser 2.0</h1>
 
-<h1>🌐 Mini Browser 2.0</h1>
+        <div class="toolbar">
 
-<p class="subtitle">
- Browse supported websites without leaving What The Dog Doin?
-</p>
+            <button onclick="goBack()">←</button>
+            <button onclick="goForward()">→</button>
+            <button onclick="reloadPage()">⟳</button>
+            <button onclick="goHome()">⌂ Home</button>
 
-<section class="browser">
+        </div>
 
- <form class="toolbar" id="browserForm">
+        <div class="address-area">
 
-  <button class="nav-button" id="back" type="button"
-   title="Back" disabled>←</button>
+            <input
+                id="address"
+                type="text"
+                placeholder="Enter a website..."
+                autocomplete="url"
+                onkeydown="if(event.key === 'Enter') navigate()"
+            >
 
-  <button class="nav-button" id="forward" type="button"
-   title="Forward" disabled>→</button>
+            <button id="go" onclick="navigate()">Go</button>
 
-  <button class="nav-button" id="reload" type="button"
-   title="Reload" disabled>↻</button>
+        </div>
 
-  <button class="nav-button" id="home" type="button"
-   title="Browser Home">⌂</button>
+    </div>
 
-  <input
-   id="address"
-   type="text"
-   placeholder="Enter a website, like roblox.com"
-   autocomplete="url"
-   spellcheck="false"
-   required
-  >
+    <div class="status" id="status">
+        Ready. Enter a website to begin.
+    </div>
 
-  <button id="go" type="submit">GO</button>
+    <div class="viewer">
 
- </form>
+        <iframe
+            id="browserFrame"
+            title="Mini Browser Website Viewer"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowfullscreen>
+        </iframe>
 
- <div class="status" id="status">
-  Ready! Enter a website address.
- </div>
+    </div>
 
- <div class="viewer">
+    <div class="footer">
+        Mini Browser 2.0 • What The Dog Doin?
+    </div>
 
-  <div class="placeholder" id="placeholder">
-   <div class="globe">🌐</div>
-   <h2>Welcome to Mini Browser 2.0</h2>
-   <p>
-    Enter a website above and press GO.
-    Your supported website will appear here.
-   </p>
-   <p>🐶 Powered by What The Dog Doin?</p>
-  </div>
-
-  <iframe
-   id="website"
-   title="Mini Browser Website"
-   sandbox="allow-scripts allow-forms allow-presentation"
-   allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-   referrerpolicy="no-referrer"
-  ></iframe>
-
- </div>
-
- <div class="tips">
-  <strong>Browser information</strong><br>
-  • Back and Forward track addresses entered in this browser.<br>
-  • Reload reloads the current address.<br>
-  • Home returns to the Mini Browser welcome screen.<br>
-  • Only HTTP and HTTPS website addresses are accepted.<br>
-  • Some websites block iframe viewing. Those restrictions cannot be overridden here.
- </div>
-
-</section>
-</main>
-
-<footer>What The Dog Doin? · Mini Browser 2.0 🐶</footer>
+</div>
 
 <script>
-const form = document.getElementById("browserForm");
-const address = document.getElementById("address");
-const website = document.getElementById("website");
-const statusText = document.getElementById("status");
-const placeholder = document.getElementById("placeholder");
 
-const backButton = document.getElementById("back");
-const forwardButton = document.getElementById("forward");
-const reloadButton = document.getElementById("reload");
-const homeButton = document.getElementById("home");
+const frame = document.getElementById("browserFrame");
+const address = document.getElementById("address");
+const statusText = document.getElementById("status");
 
 let historyList = [];
 let historyIndex = -1;
-let loadTimer = null;
 
-function normalizeWebsite(value){
- value = value.trim();
+const HOME_PAGE = "https://example.com";
 
- if(!value){
-  throw new Error("Enter a website first.");
- }
-
- if(!/^https?:\/\//i.test(value)){
-  value = "https://" + value;
- }
-
- let url;
-
- try{
-  url = new URL(value);
- }catch(error){
-  throw new Error("That website address is invalid.");
- }
-
- if(url.protocol !== "https:" && url.protocol !== "http:"){
-  throw new Error("Only HTTP and HTTPS websites are allowed.");
- }
-
- if(!url.hostname.includes(".") && url.hostname !== "localhost"){
-  throw new Error("Enter a complete address, like example.com.");
- }
-
- if(url.username || url.password){
-  throw new Error("Website addresses cannot contain login credentials.");
- }
-
- return url.href;
+function updateStatus(message) {
+    statusText.textContent = message;
 }
 
-function updateButtons(){
- backButton.disabled = historyIndex <= 0;
- forwardButton.disabled = historyIndex >= historyList.length - 1;
- reloadButton.disabled = historyIndex < 0;
+function normalizeURL(value) {
+
+    value = value.trim();
+
+    if (!value) {
+        return null;
+    }
+
+    if (!/^https?:\/\//i.test(value)) {
+        value = "https://" + value;
+    }
+
+    try {
+        const url = new URL(value);
+
+        if (url.protocol !== "https:" &&
+            url.protocol !== "http:") {
+            return null;
+        }
+
+        return url;
+
+    } catch {
+        return null;
+    }
 }
 
-function showHome(){
- clearTimeout(loadTimer);
+// Convert regular YouTube video links into embed links.
+function convertYouTubeURL(url) {
 
- website.onload = null;
- website.removeAttribute("src");
- website.style.display = "none";
+    const host = url.hostname.replace(/^www\./, "");
 
- placeholder.style.display = "flex";
- address.value = "";
+    if (
+        host === "youtube.com" ||
+        host === "m.youtube.com"
+    ) {
 
- statusText.textContent = "Browser home. Enter a website to begin.";
+        if (url.pathname === "/watch") {
 
- updateButtons();
+            const videoID = url.searchParams.get("v");
+
+            if (videoID) {
+                return "https://www.youtube-nocookie.com/embed/" +
+                    encodeURIComponent(videoID);
+            }
+        }
+
+        if (url.pathname.startsWith("/shorts/")) {
+
+            const videoID = url.pathname.split("/")[2];
+
+            if (videoID) {
+                return "https://www.youtube-nocookie.com/embed/" +
+                    encodeURIComponent(videoID);
+            }
+        }
+
+        if (url.pathname.startsWith("/embed/")) {
+            return url.href.replace(
+                "www.youtube.com",
+                "www.youtube-nocookie.com"
+            );
+        }
+
+        if (url.pathname === "/") {
+            return null;
+        }
+    }
+
+    if (host === "youtu.be") {
+
+        const videoID = url.pathname.slice(1);
+
+        if (videoID) {
+            return "https://www.youtube-nocookie.com/embed/" +
+                encodeURIComponent(videoID);
+        }
+    }
+
+    return url.href;
 }
 
-function loadWebsite(url, addToHistory = true){
- clearTimeout(loadTimer);
+function loadURL(url, addHistory = true) {
 
- if(addToHistory){
-  historyList = historyList.slice(0, historyIndex + 1);
-  historyList.push(url);
-  historyIndex = historyList.length - 1;
- }
+    const parsed = normalizeURL(url);
 
- address.value = url;
+    if (!parsed) {
+        updateStatus("Please enter a valid HTTP or HTTPS website.");
+        return;
+    }
 
- placeholder.style.display = "flex";
- website.style.display = "none";
+    const finalURL = convertYouTubeURL(parsed);
 
- statusText.textContent = "Loading " + url + "...";
+    if (!finalURL) {
+        updateStatus(
+            "The YouTube homepage cannot be displayed here. " +
+            "Try entering a specific video link."
+        );
+        return;
+    }
 
- updateButtons();
+    if (addHistory) {
 
- website.onload = function(){
-  clearTimeout(loadTimer);
+        historyList = historyList.slice(0, historyIndex + 1);
 
-  placeholder.style.display = "none";
-  website.style.display = "block";
+        historyList.push(finalURL);
 
-  statusText.textContent =
-   "The page responded. If it appears blank, it may block iframe embedding.";
+        historyIndex = historyList.length - 1;
+    }
 
-  updateButtons();
- };
+    address.value = parsed.href;
 
- website.src = url;
+    frame.src = finalURL;
 
- loadTimer = setTimeout(function(){
-  statusText.textContent =
-   "Still waiting? The website may be slow or block embedded viewing.";
- }, 12000);
+    updateStatus(
+        "Loading: " + finalURL +
+        " • Some websites block embedded viewing."
+    );
 }
 
-form.addEventListener("submit",function(event){
- event.preventDefault();
+function navigate() {
+    loadURL(address.value);
+}
 
- let url;
+function goBack() {
 
- try{
-  url = normalizeWebsite(address.value);
- }catch(error){
-  statusText.textContent = "⚠️ " + error.message;
-  return;
- }
+    if (historyIndex > 0) {
 
- loadWebsite(url);
+        historyIndex--;
+
+        const previousURL = historyList[historyIndex];
+
+        frame.src = previousURL;
+
+        address.value = previousURL;
+
+        updateStatus("Going back...");
+    }
+}
+
+function goForward() {
+
+    if (historyIndex < historyList.length - 1) {
+
+        historyIndex++;
+
+        const nextURL = historyList[historyIndex];
+
+        frame.src = nextURL;
+
+        address.value = nextURL;
+
+        updateStatus("Going forward...");
+    }
+}
+
+function reloadPage() {
+
+    if (historyIndex >= 0) {
+
+        frame.src = historyList[historyIndex];
+
+        updateStatus("Reloading page...");
+    }
+}
+
+function goHome() {
+    loadURL(HOME_PAGE);
+}
+
+frame.addEventListener("load", function() {
+    updateStatus(
+        "Page finished its loading event. " +
+        "If the viewer is blank, the website may block embedding."
+    );
 });
 
-backButton.addEventListener("click",function(){
- if(historyIndex > 0){
-  historyIndex--;
-  loadWebsite(historyList[historyIndex], false);
- }
-});
+// Start on the homepage.
+goHome();
 
-forwardButton.addEventListener("click",function(){
- if(historyIndex < historyList.length - 1){
-  historyIndex++;
-  loadWebsite(historyList[historyIndex], false);
- }
-});
-
-reloadButton.addEventListener("click",function(){
- if(historyIndex >= 0){
-  loadWebsite(historyList[historyIndex], false);
- }
-});
-
-homeButton.addEventListener("click",showHome);
-
-updateButtons();
 </script>
 
 </body>
