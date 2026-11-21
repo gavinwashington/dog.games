@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pong | What The Dog Doin?</title>
+<style>
+*{box-sizing:border-box}
+:root{
+ --bg:#001000;--panel:#101810;--accent:#70ff46;
+ --border:#285321;--text:#fff;--muted:#a9c9a3;
+}
+body{
+ margin:0;min-height:100vh;padding:18px;
+ color:var(--text);font-family:Arial,sans-serif;
+ text-align:center;
+ background:radial-gradient(ellipse at center,#07520b,#001000 75%);
+}
+header{
+ max-width:950px;margin:0 auto 15px;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:12px;flex-wrap:wrap;
+}
+a{color:var(--accent);text-decoration:none;font-weight:bold}
+h1{color:var(--accent);font-size:clamp(32px,6vw,48px);margin:12px 0 5px}
+.subtitle{color:var(--muted);margin:0 0 20px}
+.panel{
+ max-width:950px;margin:auto;padding:18px;
+ background:var(--panel);border:2px solid var(--border);
+ border-radius:18px;box-shadow:0 0 25px #0008;
+}
+.modes{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+button{
+ padding:12px 20px;border:0;border-radius:10px;
+ background:var(--accent);color:#061006;
+ font-size:16px;font-weight:bold;cursor:pointer;
+}
+button:hover{filter:brightness(1.1)}
+button.selected{outline:3px solid white;outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}
+canvas{
+ display:block;width:100%;max-width:850px;height:auto;
+ margin:auto;background:#030803;
+ border:3px solid var(--accent);border-radius:10px;
+}
+.scoreboard{
+ display:flex;justify-content:center;align-items:center;
+ gap:50px;margin:15px 0;font-size:18px;
+}
+.score{font-size:36px;color:var(--accent);font-weight:bold}
+.status{min-height:26px;color:var(--muted);margin:10px 0}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.secondary{background:#263626;color:white;border:1px solid var(--border)}
+.controls{
+ margin:20px auto 0;display:grid;
+ grid-template-columns:1fr 1fr;gap:12px;max-width:850px;
+}
+.control-card{
+ padding:13px;background:#071007;
+ border:1px solid var(--border);border-radius:12px;
+}
+.control-card h3{color:var(--accent);margin:0 0 8px}
+.control-card p{margin:5px;color:var(--muted);font-size:14px}
+footer{color:var(--muted);margin:25px 0 5px;font-size:13px}
+@media(max-width:550px){
+ .controls{grid-template-columns:1fr}
+ .scoreboard{gap:25px}
+ .panel{padding:10px}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <a href="index.html">← Back to Arcade</a>
+ <span>🐶 What The Dog Doin?</span>
+</header>
+
+<h1>🏓 PONG</h1>
+<p class="subtitle">Classic arcade action!</p>
+
+<main class="panel">
+ <div class="modes">
+  <button id="aiButton" class="selected" onclick="chooseMode('ai')">🤖 Player vs AI</button>
+  <button id="twoButton" onclick="chooseMode('two')">👥 2 Players</button>
+ </div>
+
+ <div class="scoreboard">
+  <div>
+   <div id="leftName">AI</div>
+   <div class="score" id="leftScore">0</div>
+  </div>
+  <div style="color:var(--muted);font-size:20px">VS</div>
+  <div>
+   <div id="rightName">YOU</div>
+   <div class="score" id="rightScore">0</div>
+  </div>
+ </div>
+
+ <canvas id="game" width="850" height="480"></canvas>
+
+ <p class="status" id="status">Choose a mode, then press Start Game!</p>
+
+ <div class="actions">
+  <button id="startButton" onclick="startGame()">▶ Start Game</button>
+  <button class="secondary" onclick="resetGame()">↻ Reset</button>
+ </div>
+
+ <div class="controls">
+  <div class="control-card">
+   <h3 id="leftControlTitle">Player 1 / AI</h3>
+   <p>⬆ E = Move Up</p>
+   <p>⬇ D = Move Down</p>
+   <p>SPACE = Hit / Serve</p>
+  </div>
+  <div class="control-card">
+   <h3>Player 2 — You</h3>
+   <p>⬆ Up Arrow = Move Up</p>
+   <p>⬇ Down Arrow = Move Down</p>
+   <p>⬅ Left Arrow = Hit / Serve</p>
+  </div>
+ </div>
+</main>
+
+<footer>First to 7 points wins! · What The Dog Doin? 🐶</footer>
+
+<script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+const W=canvas.width;
+const H=canvas.height;
+
+const leftScoreDisplay=document.getElementById("leftScore");
+const rightScoreDisplay=document.getElementById("rightScore");
+const statusDisplay=document.getElementById("status");
+const startButton=document.getElementById("startButton");
+
+const PADDLE_W=13;
+const PADDLE_H=95;
+const BALL_SIZE=13;
+const WIN_SCORE=7;
+
+let mode="ai";
+let running=false;
+let gameOver=false;
+let animationId=null;
+let leftScore=0;
+let rightScore=0;
+
+let left={
+ x:35,y:H/2-PADDLE_H/2,
+ speed:6
+};
+
+let right={
+ x:W-35-PADDLE_W,y:H/2-PADDLE_H/2,
+ speed:6
+};
+
+let ball={
+ x:W/2,y:H/2,
+ vx:0,vy:0
+};
+
+const keys={};
+
+function chooseMode(selected){
+ if(running)return;
+
+ mode=selected;
+
+ document.getElementById("aiButton").classList.toggle("selected",mode==="ai");
+ document.getElementById("twoButton").classList.toggle("selected",mode==="two");
+
+ document.getElementById("leftName").textContent=mode==="ai"?"AI":"PLAYER 1";
+ document.getElementById("leftControlTitle").textContent=mode==="ai"?"AI Opponent":"Player 1 — Friend";
+
+ statusDisplay.textContent=mode==="ai"
+  ?"You are Player 2. Try to beat the AI!"
+  :"Two-player mode! Grab a friend and play!";
+
+ resetGame();
+}
+
+function draw(){
+ ctx.clearRect(0,0,W,H);
+
+ // Center line
+ ctx.setLineDash([12,14]);
+ ctx.strokeStyle="#31532b";
+ ctx.lineWidth=4;
+ ctx.beginPath();
+ ctx.moveTo(W/2,0);
+ ctx.lineTo(W/2,H);
+ ctx.stroke();
+ ctx.setLineDash([]);
+
+ // Paddles
+ ctx.fillStyle="#70ff46";
+ ctx.fillRect(left.x,left.y,PADDLE_W,PADDLE_H);
+ ctx.fillRect(right.x,right.y,PADDLE_W,PADDLE_H);
+
+ // Ball
+ ctx.fillStyle="#ffffff";
+ ctx.fillRect(ball.x-BALL_SIZE/2,ball.y-BALL_SIZE/2,BALL_SIZE,BALL_SIZE);
+
+ // Small center label
+ ctx.fillStyle="#52784a";
+ ctx.font="14px Arial";
+ ctx.textAlign="center";
+ ctx.fillText("WHAT THE DOG DOIN?",W/2,H-14);
+}
+
+function resetBall(direction){
+ ball.x=W/2;
+ ball.y=H/2;
+ ball.vx=0;
+ ball.vy=0;
+
+ if(direction==="left"){
+  ball.x=W/2-20;
+ }else{
+  ball.x=W/2+20;
+ }
+}
+
+function serve(direction){
+ if(gameOver)return;
+
+ const speed=6;
+ ball.vx=direction*speed;
+ ball.vy=(Math.random()*4)-2;
+
+ if(Math.abs(ball.vy)<1)ball.vy=1.5;
+
+ running=true;
+ startButton.textContent="Game Running";
+ statusDisplay.textContent="Ball in play!";
+}
+
+function startGame(){
+ if(gameOver){
+  resetGame();
+ }
+
+ if(!running){
+  serve(Math.random()<0.5?-1:1);
+ }
+}
+
+function resetGame(){
+ running=false;
+ gameOver=false;
+ leftScore=0;
+ rightScore=0;
+
+ left.y=H/2-PADDLE_H/2;
+ right.y=H/2-PADDLE_H/2;
+
+ leftScoreDisplay.textContent="0";
+ rightScoreDisplay.textContent="0";
+
+ resetBall(1);
+ startButton.textContent="▶ Start Game";
+ statusDisplay.textContent=mode==="ai"
+  ?"You are Player 2. Press Start Game!"
+  :"Player 1 and Player 2, get ready!";
+
+ draw();
+}
+
+function movePaddles(){
+ // Player 1 controls or AI
+ if(mode==="two"){
+  if(keys["e"])left.y-=left.speed;
+  if(keys["d"])left.y+=left.speed;
+ }else{
+  // AI follows the ball, with a small reaction delay.
+  const target=ball.y-PADDLE_H/2;
+  const difference=target-(left.y);
+
+  if(difference>8)left.y+=4.2;
+  if(difference<-8)left.y-=4.2;
+ }
+
+ // Player 2 controls
+ if(keys["arrowup"])right.y-=right.speed;
+ if(keys["arrowdown"])right.y+=right.speed;
+
+ left.y=Math.max(0,Math.min(H-PADDLE_H,left.y));
+ right.y=Math.max(0,Math.min(H-PADDLE_H,right.y));
+}
+
+function collidePaddle(paddle,direction){
+ const touching=
+  ball.y+BALL_SIZE/2>paddle.y &&
+  ball.y-BALL_SIZE/2<paddle.y+PADDLE_H;
+
+ if(!touching)return false;
+
+ if(direction===1 && ball.vx>0 &&
+  ball.x+BALL_SIZE/2>=paddle.x &&
+  ball.x-BALL_SIZE/2<=paddle.x+PADDLE_W){
+
+  ball.x=paddle.x-BALL_SIZE/2;
+  ball.vx=-Math.min(Math.abs(ball.vx)*1.06,12);
+  ball.vy+=((ball.y-(paddle.y+PADDLE_H/2))/ (PADDLE_H/2))*3;
+  return true;
+ }
+
+ if(direction===-1 && ball.vx<0 &&
+  ball.x-BALL_SIZE/2<=paddle.x+PADDLE_W &&
+  ball.x+BALL_SIZE/2>=paddle.x){
+
+  ball.x=paddle.x+PADDLE_W+BALL_SIZE/2;
+  ball.vx=Math.min(Math.abs(ball.vx)*1.06,12);
+  ball.vy+=((ball.y-(paddle.y+PADDLE_H/2))/(PADDLE_H/2))*3;
+  return true;
+ }
+
+ return false;
+}
+
+function pointScored(winner){
+ running=false;
+
+ if(winner==="left"){
+  leftScore++;
+  leftScoreDisplay.textContent=leftScore;
+ }else{
+  rightScore++;
+  rightScoreDisplay.textContent=rightScore;
+ }
+
+ if(leftScore>=WIN_SCORE||rightScore>=WIN_SCORE){
+  gameOver=true;
+  const winnerName=leftScore>=WIN_SCORE
+   ?(mode==="ai"?"AI":"Player 1")
+   :"Player 2";
+
+  statusDisplay.textContent="🏆 "+winnerName+" wins the game!";
+  startButton.textContent="▶ Play Again";
+  return;
+ }
+
+ resetBall(winner==="left"?1:-1);
+
+ statusDisplay.textContent=
+  (winner==="left"?(mode==="ai"?"AI":"Player 1"):"Player 2")+
+  " scored! Press your Hit / Serve key to continue.";
+
+ startButton.textContent="▶ Start Next Point";
+}
+
+function update(){
+ if(!running)return;
+
+ movePaddles();
+
+ ball.x+=ball.vx;
+ ball.y+=ball.vy;
+
+ // Top and bottom wall bounce
+ if(ball.y-BALL_SIZE/2<=0){
+  ball.y=BALL_SIZE/2;
+  ball.vy=Math.abs(ball.vy);
+ }
+ if(ball.y+BALL_SIZE/2>=H){
+  ball.y=H-BALL_SIZE/2;
+  ball.vy=-Math.abs(ball.vy);
+ }
+
+ collidePaddle(left,-1);
+ collidePaddle(right,1);
+
+ // Score when ball leaves the screen
+ if(ball.x+BALL_SIZE/2<0){
+  pointScored("right");
+ }
+ if(ball.x-BALL_SIZE/2>W){
+  pointScored("left");
+ }
+}
+
+function loop(){
+ update();
+ draw();
+ animationId=requestAnimationFrame(loop);
+}
+
+document.addEventListener("keydown",function(event){
+ const key=event.key.toLowerCase();
+
+ if(["arrowup","arrowdown"," "].includes(key)){
+  event.preventDefault();
+ }
+
+ keys[key]=true;
+
+ if(event.repeat)return;
+
+ if(mode==="two" && key===" " && !running && !gameOver){
+  serve(1);
+ }
+
+ if(key==="arrowleft" && !running && !gameOver){
+  serve(-1);
+ }
+});
+
+document.addEventListener("keyup",function(event){
+ keys[event.key.toLowerCase()]=false;
+});
+
+window.addEventListener("blur",()=>{
+ Object.keys(keys).forEach(key=>keys[key]=false);
+});
+
+resetGame();
+loop();
+</script>
+</body>
+</html>
