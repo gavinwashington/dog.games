@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Browser | What The Dog Doin?</title>
+
+<style>
+*{
+ box-sizing:border-box;
+}
+
+:root{
+ --bg:#001000;
+ --glow:#07520b;
+ --accent:#70ff46;
+ --panel:#101810;
+ --border:#285321;
+ --text:#ffffff;
+ --muted:#a9c9a3;
+}
+
+body{
+ margin:0;
+ min-height:100vh;
+ font-family:Arial,sans-serif;
+ color:var(--text);
+ background:radial-gradient(ellipse at center,var(--glow),var(--bg) 80%);
+}
+
+header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ flex-wrap:wrap;
+ padding:15px 22px;
+ background:#000000cc;
+ border-bottom:1px solid var(--border);
+}
+
+.brand{
+ color:var(--accent);
+ text-decoration:none;
+ font-size:22px;
+ font-weight:bold;
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.brand img{
+ width:42px;
+ height:42px;
+ object-fit:contain;
+}
+
+.home{
+ color:var(--text);
+ text-decoration:none;
+ background:var(--panel);
+ border:1px solid var(--border);
+ padding:11px 16px;
+ border-radius:10px;
+}
+
+.home:hover{
+ border-color:var(--accent);
+}
+
+main{
+ width:min(1050px,94%);
+ margin:35px auto;
+}
+
+h1{
+ text-align:center;
+ color:var(--accent);
+ font-size:clamp(30px,5vw,44px);
+ margin-bottom:8px;
+}
+
+.subtitle{
+ text-align:center;
+ color:var(--muted);
+ margin-bottom:28px;
+}
+
+.browser{
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:17px;
+ padding:18px;
+ box-shadow:0 0 25px #0008;
+}
+
+.address-bar{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+}
+
+#address{
+ flex:1;
+ min-width:180px;
+ padding:15px;
+ font-size:16px;
+ color:var(--text);
+ background:#050b05;
+ border:1px solid var(--border);
+ border-radius:10px;
+ outline:none;
+}
+
+#address:focus{
+ border-color:var(--accent);
+ box-shadow:0 0 10px #70ff4633;
+}
+
+#go{
+ padding:14px 24px;
+ border:1px solid var(--accent);
+ border-radius:10px;
+ background:var(--accent);
+ color:#001000;
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+#go:hover{
+ filter:brightness(1.1);
+}
+
+#go:disabled{
+ opacity:.6;
+ cursor:wait;
+}
+
+.status{
+ min-height:24px;
+ margin:13px 2px;
+ color:var(--muted);
+ font-size:14px;
+}
+
+.viewer{
+ position:relative;
+ width:100%;
+ height:540px;
+ overflow:hidden;
+ background:#ffffff;
+ border:2px solid var(--border);
+ border-radius:12px;
+}
+
+#website{
+ width:100%;
+ height:100%;
+ border:0;
+ display:none;
+ background:white;
+}
+
+.placeholder{
+ position:absolute;
+ inset:0;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ text-align:center;
+ padding:25px;
+ color:#d8e8d3;
+ background:linear-gradient(145deg,#101810,#061006);
+}
+
+.placeholder .globe{
+ font-size:65px;
+ margin-bottom:12px;
+}
+
+.placeholder h2{
+ color:var(--accent);
+ margin:5px 0;
+}
+
+.placeholder p{
+ max-width:480px;
+ line-height:1.6;
+ color:var(--muted);
+}
+
+.tips{
+ margin-top:18px;
+ padding:15px;
+ background:#00000035;
+ border:1px solid var(--border);
+ border-radius:10px;
+ color:var(--muted);
+ font-size:13px;
+ line-height:1.6;
+}
+
+footer{
+ text-align:center;
+ color:var(--muted);
+ padding:25px;
+}
+
+@media(max-width:600px){
+ header{
+  padding:12px;
+ }
+
+ .browser{
+  padding:12px;
+ }
+
+ .viewer{
+  height:480px;
+ }
+
+ #go{
+  flex:1;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <a class="brand" href="index.html">
+  <img src="dog.png" alt="Dog logo">
+  What The Dog Doin?
+ </a>
+
+ <a class="home" href="index.html">← Home</a>
+</header>
+
+<main>
+
+ <h1>🌐 Mini Browser</h1>
+
+ <p class="subtitle">
+  Enter a website and view it right here!
+ </p>
+
+ <section class="browser">
+
+  <form class="address-bar" id="browserForm">
+   <input
+    id="address"
+    type="text"
+    placeholder="Enter a website (example: roblox.com)"
+    autocomplete="url"
+    spellcheck="false"
+    required
+   >
+
+   <button id="go" type="submit">Go →</button>
+  </form>
+
+  <div class="status" id="status">
+   Ready! Enter a website above.
+  </div>
+
+  <div class="viewer">
+
+   <div class="placeholder" id="placeholder">
+    <div class="globe">🌐</div>
+    <h2>Your Mini Browser</h2>
+    <p>
+     Type a website address above and press Go.
+     The website will appear inside this window
+     whenever it allows embedded viewing.
+    </p>
+   </div>
+
+   <iframe
+    id="website"
+    title="Mini Browser Website"
+    sandbox="allow-scripts allow-forms"
+    referrerpolicy="no-referrer"
+    loading="eager"
+   ></iframe>
+
+  </div>
+
+  <div class="tips">
+   <strong>💡 Browser information</strong><br>
+   • Enter a website such as roblox.com or example.com.<br>
+   • The browser automatically adds HTTPS when needed.<br>
+   • Some websites block embedded viewing, so they may not load here.<br>
+   • Pop-ups and top-level navigation are restricted in the viewing window.
+  </div>
+
+ </section>
+
+</main>
+
+<footer>
+ What The Dog Doin? · Mini Browser 🌐
+</footer>
+
+<script>
+const form = document.getElementById("browserForm");
+const address = document.getElementById("address");
+const website = document.getElementById("website");
+const statusText = document.getElementById("status");
+const placeholder = document.getElementById("placeholder");
+const goButton = document.getElementById("go");
+
+let loadTimer;
+
+function normalizeWebsite(value){
+
+ value = value.trim();
+
+ if(!value){
+  throw new Error("Enter a website address first.");
+ }
+
+ // Add HTTPS automatically if no protocol was entered.
+ if(!/^https?:\/\//i.test(value)){
+  value = "https://" + value;
+ }
+
+ let url;
+
+ try{
+  url = new URL(value);
+ }catch(error){
+  throw new Error("That doesn't look like a valid website address.");
+ }
+
+ // Only allow normal HTTP or HTTPS websites.
+ if(url.protocol !== "https:" && url.protocol !== "http:"){
+  throw new Error("Only HTTP and HTTPS websites are allowed.");
+ }
+
+ // Require a normal-looking public domain.
+ if(!url.hostname.includes(".") && url.hostname !== "localhost"){
+  throw new Error("Please enter a complete website address, like example.com.");
+ }
+
+ if(url.username || url.password){
+  throw new Error("Website addresses cannot contain login credentials.");
+ }
+
+ return url.href;
+}
+
+form.addEventListener("submit",function(event){
+
+ event.preventDefault();
+
+ let websiteURL;
+
+ try{
+  websiteURL = normalizeWebsite(address.value);
+ }catch(error){
+  statusText.textContent = "⚠️ " + error.message;
+  return;
+ }
+
+ clearTimeout(loadTimer);
+
+ placeholder.style.display = "flex";
+ website.style.display = "none";
+
+ statusText.textContent = "⏳ Loading " + websiteURL + "...";
+ goButton.disabled = true;
+ goButton.textContent = "Loading...";
+
+ website.onload = function(){
+
+  clearTimeout(loadTimer);
+
+  placeholder.style.display = "none";
+  website.style.display = "block";
+
+  statusText.textContent =
+   "Website loaded. If the window is blank, the website may block embedding.";
+
+  goButton.disabled = false;
+  goButton.textContent = "Go →";
+ };
+
+ website.src = websiteURL;
+
+ // Some websites block iframe embedding.
+ // Browsers do not always report that as a normal iframe error.
+ loadTimer = setTimeout(function(){
+
+  goButton.disabled = false;
+  goButton.textContent = "Go →";
+
+  statusText.textContent =
+   "Still waiting? This website may be slow or may block embedded viewing.";
+
+ },12000);
+
+});
+</script>
+
+</body>
+</html>
