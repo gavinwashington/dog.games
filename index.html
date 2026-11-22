@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,7 +128,7 @@ footer{text-align:center;padding:25px;color:var(--muted)}
    <button class="theme-option" onclick="setTheme('blue')"><span class="color-dot" style="background:blue"></span>Blue</button>
    <button class="theme-option" onclick="setTheme('pink')"><span class="color-dot" style="background:pink"></span>Pink</button>
    <button class="theme-option" onclick="setTheme('purple')"><span class="color-dot" style="background:purple"></span>Purple</button>
-   <button class="theme-option" onclick="setTheme('green')"><span class="color-dot" style="background:green"></span>green</button>
+   <button class="theme-option" onclick="setTheme('green')"><span class="color-dot" style="background:#70ff46"></span>Green</button>
   </div>
  </div>
 </header>
@@ -135,7 +136,7 @@ footer{text-align:center;padding:25px;color:var(--muted)}
 <section class="hero">
  <img class="hero-logo" src="dog.png" alt="Dog logo">
  <h1>What The Dog Doin?</h1>
- <div class="promo">Updates: 2 New Games</div>
+ <div class="promo">Updates: 2 New Games, Added Background color Green</div>
 </section>
 
 <section class="games-section">
@@ -209,7 +210,10 @@ const themes={
  red:{bg:"#250000",glow:"#650808",accent:"#ff5252",panel:"#300b0b",border:"#a52b2b",text:"#ffffff",muted:"#ffbbbb"},
  blue:{bg:"#001027",glow:"#073c78",accent:"#55aaff",panel:"#092448",border:"#2567a9",text:"#ffffff",muted:"#b5d9ff"},
  pink:{bg:"#260014",glow:"#720b43",accent:"#ff75bd",panel:"#3c1028",border:"#b83c7b",text:"#ffffff",muted:"#ffc4e1"},
- purple:{bg:"#16002a",glow:"#4d137a",accent:"#c58aff",panel:"#29113e",border:"#793ab0",text:"#ffffff",muted:"#e0c4ff"}
+ purple:{bg:"#16002a",glow:"#4d137a",accent:"#c58aff",panel:"#29113e",border:"#793ab0",text:"#ffffff",muted:"#e0c4ff"},
+
+ // NEW GREEN THEME
+ green:{bg:"#001000",glow:"#07520b",accent:"#70ff46",panel:"#101810",border:"#285321",text:"#ffffff",muted:"#a9c9a3"}
 };
 
 function setTheme(name){
