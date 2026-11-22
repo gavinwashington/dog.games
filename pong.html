@@ -25,6 +25,20 @@ header{
 a{color:var(--accent);text-decoration:none;font-weight:bold}
 h1{color:var(--accent);font-size:clamp(32px,6vw,48px);margin:12px 0 5px}
 .subtitle{color:var(--muted);margin:0 0 20px}
+
+#deviceWarning{
+ display:none;
+ color:#ff7777;
+ font-weight:bold;
+ background:#250000;
+ border:1px solid #ff5252;
+ border-radius:10px;
+ padding:12px;
+ max-width:600px;
+ margin:15px auto;
+ line-height:1.5;
+}
+
 .panel{
  max-width:950px;margin:auto;padding:18px;
  background:var(--panel);border:2px solid var(--border);
@@ -78,6 +92,11 @@ footer{color:var(--muted);margin:25px 0 5px;font-size:13px}
 </header>
 
 <h1>🏓 PONG</h1>
+
+<p id="deviceWarning">
+ ⚠️ iPad And iPhone do not meet the requirements to play this game.
+</p>
+
 <p class="subtitle">Classic arcade action!</p>
 
 <main class="panel">
@@ -126,6 +145,14 @@ footer{color:var(--muted);margin:25px 0 5px;font-size:13px}
 <footer>First to 7 points wins! · What The Dog Doin? 🐶</footer>
 
 <script>
+// iPad and iPhone warning
+if(
+ /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+ (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1)
+){
+ document.getElementById("deviceWarning").style.display="block";
+}
+
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
@@ -145,7 +172,7 @@ const WIN_SCORE=7;
 let mode="ai";
 let running=false;
 let gameOver=false;
-let animationId=null;
+
 let leftScore=0;
 let rightScore=0;
 
@@ -187,7 +214,6 @@ function chooseMode(selected){
 function draw(){
  ctx.clearRect(0,0,W,H);
 
- // Center line
  ctx.setLineDash([12,14]);
  ctx.strokeStyle="#31532b";
  ctx.lineWidth=4;
@@ -197,16 +223,13 @@ function draw(){
  ctx.stroke();
  ctx.setLineDash([]);
 
- // Paddles
  ctx.fillStyle="#70ff46";
  ctx.fillRect(left.x,left.y,PADDLE_W,PADDLE_H);
  ctx.fillRect(right.x,right.y,PADDLE_W,PADDLE_H);
 
- // Ball
  ctx.fillStyle="#ffffff";
  ctx.fillRect(ball.x-BALL_SIZE/2,ball.y-BALL_SIZE/2,BALL_SIZE,BALL_SIZE);
 
- // Small center label
  ctx.fillStyle="#52784a";
  ctx.font="14px Arial";
  ctx.textAlign="center";
@@ -272,20 +295,17 @@ function resetGame(){
 }
 
 function movePaddles(){
- // Player 1 controls or AI
  if(mode==="two"){
   if(keys["e"])left.y-=left.speed;
   if(keys["d"])left.y+=left.speed;
  }else{
-  // AI follows the ball, with a small reaction delay.
   const target=ball.y-PADDLE_H/2;
-  const difference=target-(left.y);
+  const difference=target-left.y;
 
   if(difference>8)left.y+=4.2;
   if(difference<-8)left.y-=4.2;
  }
 
- // Player 2 controls
  if(keys["arrowup"])right.y-=right.speed;
  if(keys["arrowdown"])right.y+=right.speed;
 
@@ -306,7 +326,7 @@ function collidePaddle(paddle,direction){
 
   ball.x=paddle.x-BALL_SIZE/2;
   ball.vx=-Math.min(Math.abs(ball.vx)*1.06,12);
-  ball.vy+=((ball.y-(paddle.y+PADDLE_H/2))/ (PADDLE_H/2))*3;
+  ball.vy+=((ball.y-(paddle.y+PADDLE_H/2))/(PADDLE_H/2))*3;
   return true;
  }
 
@@ -345,7 +365,7 @@ function pointScored(winner){
   return;
  }
 
- resetBall(winner==="left"?1:-1);
+ resetBall(winner==="left"?"left":"right");
 
  statusDisplay.textContent=
   (winner==="left"?(mode==="ai"?"AI":"Player 1"):"Player 2")+
@@ -362,7 +382,6 @@ function update(){
  ball.x+=ball.vx;
  ball.y+=ball.vy;
 
- // Top and bottom wall bounce
  if(ball.y-BALL_SIZE/2<=0){
   ball.y=BALL_SIZE/2;
   ball.vy=Math.abs(ball.vy);
@@ -375,7 +394,6 @@ function update(){
  collidePaddle(left,-1);
  collidePaddle(right,1);
 
- // Score when ball leaves the screen
  if(ball.x+BALL_SIZE/2<0){
   pointScored("right");
  }
@@ -387,7 +405,7 @@ function update(){
 function loop(){
  update();
  draw();
- animationId=requestAnimationFrame(loop);
+ requestAnimationFrame(loop);
 }
 
 document.addEventListener("keydown",function(event){
