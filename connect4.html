@@ -1,0 +1,538 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect 4 | What The Dog Doin?</title>
+
+<style>
+* {
+ box-sizing: border-box;
+}
+
+:root {
+ --bg:#001000;
+ --glow:#07520b;
+ --accent:#70ff46;
+ --panel:#101810;
+ --border:#285321;
+ --text:#ffffff;
+ --muted:#a9c9a3;
+}
+
+body {
+ margin:0;
+ min-height:100vh;
+ background:radial-gradient(ellipse at center,var(--glow),var(--bg) 80%);
+ color:var(--text);
+ font-family:Arial,sans-serif;
+ text-align:center;
+}
+
+header {
+ padding:15px;
+ background:rgba(0,0,0,.8);
+ border-bottom:1px solid var(--border);
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ flex-wrap:wrap;
+}
+
+.brand {
+ display:flex;
+ align-items:center;
+ gap:10px;
+ color:var(--accent);
+ font-size:21px;
+ font-weight:bold;
+ text-decoration:none;
+}
+
+.brand img {
+ width:42px;
+ height:42px;
+ object-fit:contain;
+}
+
+.back {
+ padding:10px 15px;
+ border:1px solid var(--border);
+ border-radius:10px;
+ background:var(--panel);
+ color:var(--accent);
+ text-decoration:none;
+ font-weight:bold;
+}
+
+.back:hover {
+ background:var(--glow);
+}
+
+main {
+ max-width:650px;
+ margin:auto;
+ padding:25px 12px 45px;
+}
+
+h1 {
+ color:var(--accent);
+ font-size:clamp(32px,6vw,48px);
+ margin:15px 0 8px;
+ text-shadow:0 0 15px #70ff4666;
+}
+
+.subtitle {
+ color:var(--muted);
+ margin-bottom:25px;
+}
+
+.scoreboard {
+ display:flex;
+ justify-content:center;
+ gap:15px;
+ margin:20px auto;
+ flex-wrap:wrap;
+}
+
+.score {
+ min-width:130px;
+ padding:15px;
+ border-radius:13px;
+ background:var(--panel);
+ border:1px solid var(--border);
+}
+
+.score .label {
+ font-size:15px;
+ color:var(--muted);
+}
+
+.score .number {
+ font-size:32px;
+ font-weight:bold;
+ margin-top:5px;
+}
+
+.red-number {
+ color:#ff4545;
+}
+
+.yellow-number {
+ color:#ffdf35;
+}
+
+.status {
+ margin:20px auto;
+ padding:15px;
+ max-width:400px;
+ border-radius:12px;
+ background:var(--panel);
+ border:1px solid var(--border);
+ font-size:19px;
+ font-weight:bold;
+}
+
+#turnColor {
+ display:inline-block;
+ width:15px;
+ height:15px;
+ border-radius:50%;
+ margin-right:7px;
+ vertical-align:middle;
+ background:#ff4545;
+}
+
+.board-wrapper {
+ width:min(100%,490px);
+ margin:25px auto;
+ padding:12px;
+ background:#0755b5;
+ border:4px solid #063b80;
+ border-radius:18px;
+ box-shadow:0 10px 30px #0009;
+}
+
+.board {
+ display:grid;
+ grid-template-columns:repeat(7,1fr);
+ gap:7px;
+}
+
+.cell {
+ width:100%;
+ aspect-ratio:1;
+ border-radius:50%;
+ background:#00152f;
+ border:3px solid #063b80;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ cursor:pointer;
+ padding:0;
+ transition:background .15s,transform .15s;
+}
+
+.cell:hover:not(.red):not(.yellow) {
+ background:#123c6b;
+ transform:scale(.94);
+}
+
+.cell.red {
+ background:#ff3838;
+ border-color:#b50000;
+ box-shadow:inset 0 3px 7px #ffffff55,0 0 8px #ff383877;
+ cursor:default;
+}
+
+.cell.yellow {
+ background:#ffdf35;
+ border-color:#b99400;
+ box-shadow:inset 0 3px 7px #ffffff77,0 0 8px #ffdf3577;
+ cursor:default;
+}
+
+.cell.winner {
+ outline:4px solid white;
+ outline-offset:-5px;
+}
+
+.controls {
+ display:flex;
+ justify-content:center;
+ gap:12px;
+ flex-wrap:wrap;
+ margin-top:25px;
+}
+
+.control-button {
+ padding:13px 20px;
+ border-radius:11px;
+ border:1px solid var(--accent);
+ background:var(--panel);
+ color:var(--accent);
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+ transition:.2s;
+}
+
+.control-button:hover {
+ background:var(--accent);
+ color:#001000;
+ transform:translateY(-2px);
+}
+
+.rules {
+ margin:30px auto 0;
+ max-width:450px;
+ padding:17px;
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:13px;
+ color:var(--muted);
+ line-height:1.6;
+}
+
+.rules h3 {
+ color:var(--accent);
+ margin-top:0;
+}
+
+footer {
+ padding:20px;
+ color:var(--muted);
+}
+
+@media(max-width:450px) {
+ .board-wrapper {
+  padding:7px;
+ }
+
+ .board {
+  gap:4px;
+ }
+
+ .cell {
+  border-width:2px;
+ }
+
+ .score {
+  min-width:110px;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <a class="brand" href="index.html">
+  <img src="dog.png" alt="Dog logo">
+  What The Dog Doin?
+ </a>
+
+ <a class="back" href="index.html">← Back to Games</a>
+</header>
+
+<main>
+
+ <h1>🔴 CONNECT 4 🟡</h1>
+ <p class="subtitle">Get four pieces in a row to win!</p>
+
+ <div class="scoreboard">
+
+  <div class="score">
+   <div class="label">🔴 RED PLAYER</div>
+   <div class="number red-number" id="redScore">0</div>
+  </div>
+
+  <div class="score">
+   <div class="label">🟡 YELLOW PLAYER</div>
+   <div class="number yellow-number" id="yellowScore">0</div>
+  </div>
+
+ </div>
+
+ <div class="status" id="status">
+  <span id="turnColor"></span>
+  Red Player's Turn!
+ </div>
+
+ <div class="board-wrapper">
+  <div class="board" id="board"></div>
+ </div>
+
+ <div class="controls">
+  <button class="control-button" onclick="newGame()">
+   🔄 New Game
+  </button>
+
+  <button class="control-button" onclick="resetScores()">
+   Reset Scores
+  </button>
+ </div>
+
+ <div class="rules">
+  <h3>📖 How To Play</h3>
+  1. Red goes first.<br>
+  2. Click or tap a column to drop your piece.<br>
+  3. Take turns placing pieces.<br>
+  4. Connect four horizontally, vertically, or diagonally to win!
+ </div>
+
+</main>
+
+<footer>
+ What The Dog Doin? · Connect 4 🐶
+</footer>
+
+<script>
+const ROWS = 6;
+const COLS = 7;
+
+let board = [];
+let currentPlayer = 1;
+let gameOver = false;
+
+let redScore = 0;
+let yellowScore = 0;
+
+const boardElement = document.getElementById("board");
+const statusElement = document.getElementById("status");
+const turnColor = document.getElementById("turnColor");
+
+function createBoard() {
+ board = Array.from(
+  {length:ROWS},
+  () => Array(COLS).fill(0)
+ );
+
+ boardElement.innerHTML = "";
+
+ for(let row=0;row<ROWS;row++) {
+  for(let col=0;col<COLS;col++) {
+
+   const cell = document.createElement("button");
+
+   cell.className = "cell";
+   cell.type = "button";
+   cell.setAttribute("aria-label",
+    `Row ${row+1}, column ${col+1}`
+   );
+
+   cell.addEventListener("click",()=>{
+    dropPiece(col);
+   });
+
+   boardElement.appendChild(cell);
+  }
+ }
+
+ updateBoard();
+ updateStatus();
+}
+
+function updateBoard() {
+ const cells = boardElement.children;
+
+ for(let row=0;row<ROWS;row++) {
+  for(let col=0;col<COLS;col++) {
+
+   const index = row*COLS+col;
+   const cell = cells[index];
+
+   cell.classList.remove("red","yellow","winner");
+
+   if(board[row][col]===1) {
+    cell.classList.add("red");
+   }
+
+   if(board[row][col]===2) {
+    cell.classList.add("yellow");
+   }
+  }
+ }
+}
+
+function dropPiece(col) {
+ if(gameOver) return;
+
+ // Find the lowest empty space.
+ let row = ROWS-1;
+
+ while(row>=0 && board[row][col]!==0) {
+  row--;
+ }
+
+ // Column is full.
+ if(row<0) return;
+
+ board[row][col] = currentPlayer;
+
+ updateBoard();
+
+ const winningPieces = checkWinner(row,col);
+
+ if(winningPieces.length>0) {
+  finishGame(winningPieces);
+  return;
+ }
+
+ if(board.every(row=>row.every(cell=>cell!==0))) {
+  finishDraw();
+  return;
+ }
+
+ currentPlayer = currentPlayer===1 ? 2 : 1;
+
+ updateStatus();
+}
+
+function checkWinner(row,col) {
+ const player = board[row][col];
+
+ const directions = [
+  [0,1],  // Horizontal
+  [1,0],  // Vertical
+  [1,1],  // Diagonal
+  [1,-1]  // Other diagonal
+ ];
+
+ for(const [dr,dc] of directions) {
+
+  let pieces = [[row,col]];
+
+  // Search in both directions.
+  for(const direction of [-1,1]) {
+
+   let r = row + dr*direction;
+   let c = col + dc*direction;
+
+   while(
+    r>=0 && r<ROWS &&
+    c>=0 && c<COLS &&
+    board[r][c]===player
+   ) {
+    pieces.push([r,c]);
+
+    r += dr*direction;
+    c += dc*direction;
+   }
+  }
+
+  if(pieces.length>=4) {
+   return pieces;
+  }
+ }
+
+ return [];
+}
+
+function finishGame(winningPieces) {
+ gameOver = true;
+
+ const winnerName = currentPlayer===1 ? "Red" : "Yellow";
+
+ if(currentPlayer===1) {
+  redScore++;
+ } else {
+  yellowScore++;
+ }
+
+ document.getElementById("redScore").textContent=redScore;
+ document.getElementById("yellowScore").textContent=yellowScore;
+
+ statusElement.textContent =
+  "🏆 "+winnerName+" Player Wins!";
+
+ turnColor.style.display="none";
+
+ winningPieces.forEach(([row,col])=>{
+  const index = row*COLS+col;
+  boardElement.children[index].classList.add("winner");
+ });
+}
+
+function finishDraw() {
+ gameOver = true;
+
+ statusElement.textContent = "🤝 It's a Draw!";
+ turnColor.style.display="none";
+}
+
+function updateStatus() {
+ turnColor.style.display="inline-block";
+
+ if(currentPlayer===1) {
+  turnColor.style.background="#ff3838";
+  statusElement.lastChild.textContent=" Red Player's Turn!";
+ } else {
+  turnColor.style.background="#ffdf35";
+  statusElement.lastChild.textContent=" Yellow Player's Turn!";
+ }
+}
+
+function newGame() {
+ currentPlayer=1;
+ gameOver=false;
+ createBoard();
+}
+
+function resetScores() {
+ redScore=0;
+ yellowScore=0;
+
+ document.getElementById("redScore").textContent=0;
+ document.getElementById("yellowScore").textContent=0;
+
+ newGame();
+}
+
+createBoard();
+</script>
+
+</body>
+</html>
